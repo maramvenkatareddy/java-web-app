@@ -40,7 +40,7 @@ pipeline {
                     sh """
                         jf -v
                         jf c show
-                        jf rt upload "target/*.jar" "java-project-libs-release-local/" --server-id=artifactory
+                        jf rt upload --url https://jfrogvenkat3533.jfrog.io/artifactory --access-token ${jfrog_id} "target/*.jar" "java-project-libs-release-local/"
                     """
                 }
             }
