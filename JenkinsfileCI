@@ -34,6 +34,13 @@ pipeline {
                 }
             }
         }
+        stage('jfrog-cli') {
+
+           steps {
+               jf '-v'
+
+           }
+        }
         // stage('Deploy to Artifactory') {
          //   environment {
                 // Define the target repository in Artifactory
