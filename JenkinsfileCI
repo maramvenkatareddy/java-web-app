@@ -37,9 +37,11 @@ pipeline {
         stage('jfrog-cli') {
 
            steps {
+              sh "" "" ""
                jf '-v'
                jf 'c show'
                jfrog rt upload "target/*.jar" "java-peoject-libs-release-local" --server-id=artifactory
+              "" "" ""
 
            }
         }
