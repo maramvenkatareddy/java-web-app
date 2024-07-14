@@ -9,6 +9,17 @@ pipeline {
                 git branch: 'sonar', url: 'https://github.com/maramvenkatareddy/java-web-app.git'
             }
         }
+        stage('SonarQube analysis') {
+              steps {
+                script {
+                  // requires SonarQube Scanner 2.8+
+                  scannerHome = tool 'sonarQubeScanner-6.1.0'
+                }
+                withSonarQubeEnv('SonarQube Scanner') {
+                  sh "${scannerHome}/bin/sonar-scanner"
+                }
+              }
+        }
         stage('Build the code and SonarQube analysis') {
             steps {
                 script {
