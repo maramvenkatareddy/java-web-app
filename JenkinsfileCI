@@ -6,6 +6,10 @@ pipeline {
     tools {
        jfrog 'jfrog-cli'
     }
+    environment {
+        // Define the credentials IDs
+        JFROG_CREDENTIALS_ID = 'jfrog_id'
+    }
     stages {
         stage('Clone the code from GitHub') {
             steps {
@@ -40,7 +44,7 @@ pipeline {
                     sh """
                         jf -v
                         jf c show
-                        jf rt upload --url https://jfrogvenkat3533.jfrog.io/artifactory --access-token ${jfrog_id} "target/*.jar" "java-project-libs-release-local/"
+                        jf rt upload --url https://jfrogvenkat3533.jfrog.io/artifactory --access-token ${JFROG_CREDENTIALS_ID} "target/*.jar" "java-project-libs-release-local/"
                     """
                 }
             }
