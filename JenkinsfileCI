@@ -1,33 +1,35 @@
 pipeline {
-    agent {label 'master'}
+    agent { label 'master' }
     triggers {
         pollSCM('* * * * *')
     }
     stages {
-        stage ('clone the code from github') {
+        stage('Clone the code from GitHub') {
             steps {
                 git branch: 'sonar', url: 'https://github.com/maramvenkatareddy/java-web-app.git'
             }
         }
-        stage ('build the code and sonarqube analysis') {
+        stage('Build the code and SonarQube analysis') {
             steps {
-              def scannerHome = tool 'sonar'
-              withSonarQubeEnv('sonarqube') {
-                sh 'mvn sonar:sonar -Dsonar:projectkey=Java-web-key -Dsonar.host.url=http://98.70.73.200:9000/'
-              }
+                script {
+                    def scannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+                }
+                withSonarQubeEnv('sonarqube') {
+                    sh "mvn clean install sonar:sonar -Dsonar.projectKey=Java-web-key -Dsonar.host.url=http://98.70.73.200:9000/"
+                }
             }
         }
-        stage("Quality Gate") {
-          steps {
-            timeout(time: 30, unit: 'MINUTES') {
-              waitForQualityGate abortPipeline: true
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 30, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
-          }
         }
-       stage('script') {
-           steps {
-                echo "success"
-           } 
-       }
+        stage('Script') {
+            steps {
+                echo 'success'
+            }
+        }
     }
 }
