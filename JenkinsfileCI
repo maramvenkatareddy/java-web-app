@@ -38,9 +38,9 @@ pipeline {
             steps {
                 script {
                     sh """
-                        jf -v
-                        jf c show
-                        jfrog rt upload "target/*.jar" "java-project-libs-release-local/" --server-id="artifactory"
+                        /var/lib/jenkins/tools/io.jenkins.plugins.jfrog.JfrogInstallation/jfrog-cli/jf -v
+                        /var/lib/jenkins/tools/io.jenkins.plugins.jfrog.JfrogInstallation/jfrog-cli/jf c show
+                        /var/lib/jenkins/tools/io.jenkins.plugins.jfrog.JfrogInstallation/jfrog-cli/jfrog rt upload "target/*.jar" "java-project-libs-release-local/" --server-id=artifactory
                     """
                 }
             }
