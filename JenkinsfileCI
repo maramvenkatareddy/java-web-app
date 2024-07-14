@@ -9,6 +9,8 @@ pipeline {
     environment {
         // Define the credentials IDs
         JFROG_CREDENTIALS_ID = 'jfrog-prebuild-repo'
+        ARTIFACTORY_URL = 'https://jfrogvenkat3533.jfrog.io/artifactory'
+        TARGET_REPO = 'pre-build-java-proje-libs-release/'
     }
     stages {
         stage('Clone the code from GitHub') {
