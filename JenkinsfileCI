@@ -23,5 +23,10 @@ pipeline {
             }
           }
         }
+       stage('script') {
+           steps {
+                echo "success"
+           } 
+       }
     }
 }
