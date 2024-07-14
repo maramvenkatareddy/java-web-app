@@ -3,6 +3,9 @@ pipeline {
     triggers {
         pollSCM('* * * * *')
     }
+    tools {
+       jfrog 'jfrog-cli'
+    }
     stages {
         stage('Clone the code from GitHub') {
             steps {
@@ -56,6 +59,6 @@ pipeline {
             //        }
             //    }
             // }
-        // }
+        // } 
     }
 }
