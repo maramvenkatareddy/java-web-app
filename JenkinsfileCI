@@ -38,13 +38,13 @@ pipeline {
                 }
             }
         }
-        stage('jfrog-cli') {
+        stage('Upload to Artifactory') {
             steps {
-                script {
+                withCredentials([string(credentialsId: 'jfrog-prebuild-repo', variable: 'ARTIFACTORY_TOKEN')]) {
                     sh """
                         jf -v
-                        jf c show
-                        jf rt upload --url https://jfrogvenkat3533.jfrog.io/artifactory --access-token ${jfrog-prebuild-repo}  target/*.jar pre-build-java-proje-libs-release/
+                        jf rt config --url ${ARTIFACTORY_URL} --access-token ${ARTIFACTORY_TOKEN} --interactive=false
+                        jf rt upload target/*.jar ${TARGET_REPO}/
                     """
                 }
             }
