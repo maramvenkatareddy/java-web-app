@@ -11,7 +11,7 @@ pipeline {
         }
         stage ('build the code and sonarqube analysis') {
             steps {
-              def scannerHome = tool 'sonar';
+              def scannerHome = tool 'sonar'
               withSonarQubeEnv('sonarqube') {
                 sh 'mvn sonar:sonar -Dsonar:projectkey=Java-web-key -Dsonar.host.url=http://98.70.73.200:9000/'
               }
