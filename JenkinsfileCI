@@ -8,9 +8,9 @@ pipeline {
     }
     environment {
         // Define the credentials IDs
-        JFROG_CREDENTIALS_ID = 'jfrog-prebuild-repo'
+        JFROG_CREDENTIALS_ID = 'maven-jaa-id'
         ARTIFACTORY_URL = 'https://jfrogvenkat3533.jfrog.io/artifactory'
-        TARGET_REPO = 'pre-build-java-proje-libs-release/'
+        TARGET_REPO = 'maven-jaaaa/'
     }
     stages {
         stage('Clone the code from GitHub') {
@@ -42,7 +42,7 @@ pipeline {
         }
         stage('Upload to Artifactory') {
             steps {
-                withCredentials([string(credentialsId: 'jfrog-prebuild-repo', variable: 'ARTIFACTORY_TOKEN')]) {
+                withCredentials([string(credentialsId: 'maven-jaa-id', variable: 'ARTIFACTORY_TOKEN')]) {
                     sh """
                         jf -v
                         jf rt config --url ${ARTIFACTORY_URL} --access-token ${ARTIFACTORY_TOKEN} --interactive=false
