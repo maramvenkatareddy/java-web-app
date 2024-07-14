@@ -9,9 +9,11 @@ pipeline {
                 git branch: 'sonar', url: 'https://github.com/maramvenkatareddy/java-web-app.git'
             }
         }
-        stage ('build the code') {
+        stage ('build the code and sonarqube analysis') {
             steps {
-                sh 'mvn package'
+              withSonarQubeEnv('sonarqube') {
+                sh 'mvn sonar:sonar -Dsonar:projectkey=Java-web-key -Dsonar.host.url=http://98.70.73.200:9000/'
+              }
             }
         }
     }
