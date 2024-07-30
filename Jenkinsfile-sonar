@@ -3,15 +3,6 @@ pipeline {
     triggers {
         pollSCM('* * * * *')
     }
-    tools {
-       jfrog 'jfrog-cli'
-    }
-    environment {
-        // Define the credentials IDs
-        JFROG_CREDENTIALS_ID = 'maven-jaa-id'
-        ARTIFACTORY_URL = 'https://jfrogvenkat3533.jfrog.io/artifactory'
-        TARGET_REPO = 'maven-jaaaa/'
-    }
     stages {
         stage('Clone the code from GitHub') {
             steps {
