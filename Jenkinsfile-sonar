@@ -15,7 +15,7 @@ pipeline {
                     def scannerHome = tool name: 'sonarQubeScanner-6.1.0', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
                 }
                 withSonarQubeEnv('sonarqube') {
-                    sh "mvn clean install sonar:sonar -Dsonar.projectKey=java -Dsonar.host.url=http://13.126.213.88:32768/"
+                    sh "mvn clean install sonar:sonar -Dsonar.projectKey=java1 -Dsonar.host.url=http://13.126.213.88:32768/"
                 }
             }
         }
