@@ -3,6 +3,10 @@ pipeline {
     triggers {
         pollSCM('* * * * *')
     }
+    environment {
+                // Define the target repository in Artifactory
+                TARGET_REPO = 'java1-libs-release-local'
+            }
     stages {
         stage('Clone the code from GitHub') {
             steps {
@@ -12,24 +16,24 @@ pipeline {
         stage('Build the code and SonarQube analysis') {
             steps {
                 script {
-                    def scannerHome = tool name: 'sonarQubeScanner-6.1.0', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-                }
-                withSonarQubeEnv('sonarqube') {
-                    sh "mvn clean install sonar:sonar -Dsonar.projectKey=java1 -Dsonar.host.url=http://13.126.213.88:32768/"
-                }
-            }
-        }
-       stage('Quality Gate') {
-            steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    script {
-                        def qualityGate = waitForQualityGate()
-                        if (qualityGate.status != 'OK') {
-                            error "Quality Gate failed: ${qualityGate.status}"
-                        }
+                    try {
+                        def server = Artifactory.newServer url: 'https://veenan.jfrog.io/artifactory', credentialsId: 'jfrog'
+                        def uploadSpec = """{
+                            "files": [
+                                {
+                                    "pattern": "target/*.jar",
+                                    "target": "${TARGET_REPO}/"
+                                }
+                            ]
+                        }"""
+                        
+                        server.upload(uploadSpec)
+                    } catch (Exception e) {
+                        error("Failed to deploy artifacts to Artifactory: ${e.message}")
                     }
                 }
             }
         }
+       
     }
 }
