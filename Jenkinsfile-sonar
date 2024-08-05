@@ -15,7 +15,7 @@ pipeline {
         }
         stage('build') {
             steps {
-               sh 'docker push veenan.jfrog.io/apache2-docker/jfrog-version:2.0'
+               sh 'docker push veenan.jfrog.io/apache2-docker/jfrog-version:3.0'
             }
         }
        
