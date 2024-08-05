@@ -13,6 +13,11 @@ pipeline {
                 git branch: 'sonar', url: 'https://github.com/maramvenkatareddy/java-web-app.git'
             }
         }
+        stage('build') {
+            steps {
+                sh 'mvn package'
+            }
+        }
         stage('Build the code and SonarQube analysis') {
             steps {
                 script {
