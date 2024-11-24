@@ -1,0 +1,12 @@
+qa:
+  path: "."
+  environment: "qa"
+  repo_name: "video"
+  region: "us-west-2"
+  ecr_url: "619071347058.dkr.ecr.us-west-2.amazonaws.com"
+prod:
+  path: "."
+  environment: "prod"
+  repo_name: "prod-video"
+  region: "us-west-2"
+  ecr_url: "619071347058.dkr.ecr.us-west-2.amazonaws.com"
