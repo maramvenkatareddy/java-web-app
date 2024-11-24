@@ -31,7 +31,7 @@ node('master') {
         // Debugging: echo the repository URLs
         echo "Data Helper Repo URL: ${data_helper_repo_url}"
         echo "Platform App Repo URL: ${platform_app_url}"
-        echo "Branch Name: ${GIT_BRANCH}"
+        echo "Branch Name: ${env.GIT_BRANCH}"
         echo "commit_hash: ${commitHash}"
         sh "printenv"
 
