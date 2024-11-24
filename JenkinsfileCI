@@ -62,9 +62,9 @@ node('master') {
           dir("${config.path}") {
             current = "Stage Docker build"
              if (ENVIRONMENT == "qa") {
-                sh "docker build -t ${config.ecr_url}/${config.repo_name}:main-1 -f Dockerfile.qa ."
+                sh "docker build -t ${config.ecr_url}/${config.repo_name}:${env.GIT_COMMIT}-1 -f Dockerfile.qa ."
              } else if (ENVIRONMENT == "prod") { 
-                sh "docker build -t ${config.ecr_url}/${config.repo_name}:main-1  -f Dockerfile.prod ."
+                sh "docker build -t ${config.ecr_url}/${config.repo_name}:${env.GIT_COMMIT}-1  -f Dockerfile.prod ."
              }
             sh "docker tag ${config.ecr_url}/${config.repo_name}:main-1 ${config.ecr_url}/${config.repo_name}:latest"
           }
