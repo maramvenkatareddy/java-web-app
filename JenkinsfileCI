@@ -42,7 +42,7 @@ node('master') {
         stage('Clone Datahelper Repository') {
             dir('repo1') {
                 echo "Cloning repository: ${data_helper_repo_url}"
-                echo "GIT_COMMIT: ${env.GIT_COMMIT}"
+                sh 'echo "GIT_COMMIT: ${env.GIT_COMMIT}"'
                 git branch: "main", url: "https://github.com/maramvenkatareddy/node_js.git"
                 echo "Checked out Datahelper Repository"
                 sh "ls"
