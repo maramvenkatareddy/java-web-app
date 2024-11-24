@@ -104,7 +104,7 @@ node('master') {
                 sh 'git add eks/prod/deployment.yaml'
                 sh 'git commit -m "Updated to the newer version"'
                 // Use the credentials for Git push
-                sh 'cat ${deploymentFile}'
+                sh 'cat /eks/prod/deployment.yaml}'
             } else {
                 error "Deployment file ${deploymentFile} not found!"
             }
