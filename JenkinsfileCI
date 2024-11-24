@@ -27,14 +27,9 @@ node('master') {
 
     try {
         def commitHash = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
-        def branchName = sh(script: "git symbolic-ref --short HEAD", returnStdout: true).trim()
-
-                    // Use the branch name to get the remote branch
-        def remoteBranch = sh(script: "git rev-parse --abbrev-ref origin/${branchName}", returnStdout: true).trim()
         // Debugging: echo the repository URLs
         echo "Data Helper Repo URL: ${data_helper_repo_url}"
         echo "Platform App Repo URL: ${platform_app_url}"
-        echo "Branch Name: ${remoteBranch}"
         echo "commit_hash: ${commitHash}"
         sh "printenv"
 
@@ -45,8 +40,6 @@ node('master') {
                 git branch: "main", url: "https://github.com/maramvenkatareddy/java-web-app.git"
                 echo "Checked out Platform Application Repository"
                 sh "ls"
-                echo "Branch: ${env.GIT_BRANCH}"
-                echo "Commit Hash: ${env.GIT_COMMIT}"
             }
         }
         stage('Clone Datahelper Repository') {
@@ -74,9 +67,9 @@ node('master') {
           dir("${config.path}") {
             current = "Stage Docker build"
              if (ENVIRONMENT == "qa") {
-                sh "docker build -t ${config.ecr_url}/${config.repo_name}:${env.GIT_COMMIT}-1 -f Dockerfile.qa ."
+                sh "docker build -t ${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash} -f Dockerfile.qa ."
              } else if (ENVIRONMENT == "prod") { 
-                sh "docker build -t ${config.ecr_url}/${config.repo_name}:${env.GIT_COMMIT}-1  -f Dockerfile.prod ."
+                sh "docker build -t ${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash}  -f Dockerfile.prod ."
              }
             sh "docker tag ${config.ecr_url}/${config.repo_name}:main-1 ${config.ecr_url}/${config.repo_name}:latest"
           }
@@ -87,7 +80,7 @@ node('master') {
               stage('Docker Image Push to Ecr') {
                 current = "Stage Docker Image Push to Ecr"
                 sh "aws ecr get-login-password --region ${config.region} | docker login --username AWS --password-stdin ${config.ecr_url}"
-                sh "docker push ${config.ecr_url}/${config.repo_name}:main-1"
+                sh "docker push ${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash}"
                 sh "docker push ${config.ecr_url}/${config.repo_name}:latest"
             }
           }
