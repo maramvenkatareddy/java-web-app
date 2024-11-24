@@ -2,6 +2,7 @@ node('master') {
     checkout scm
     def data_helper_repo_url = 'https://github.com/maramvenkatareddy/node_js.git'
     def platform_app_url = 'https://github.com/maramvenkatareddy/java-web-app.git'
+     def branchName = env.GIT_BRANCH.replaceFirst(/^.*\//, '')
      properties([
         pipelineTriggers([
             // Poll SCM for changes in the specific repository
@@ -42,7 +43,7 @@ node('master') {
         stage('Clone Datahelper Repository') {
             dir('repo1') {
                 echo "Cloning repository: ${data_helper_repo_url}"
-                sh 'echo "GIT_COMMIT: ${env.GIT_COMMIT}"'
+                echo "Branch Name: ${branchName}"
                 git branch: "main", url: "https://github.com/maramvenkatareddy/node_js.git"
                 echo "Checked out Datahelper Repository"
                 sh "ls"
