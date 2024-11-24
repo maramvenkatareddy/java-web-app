@@ -27,11 +27,14 @@ node('master') {
 
     try {
         def commitHash = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
-        def remoteBranch = sh(script: "git rev-parse --abbrev-ref origin/$(git symbolic-ref --short HEAD)", returnStdout: true).trim()
+        def branchName = sh(script: "git symbolic-ref --short HEAD", returnStdout: true).trim()
+
+                    // Use the branch name to get the remote branch
+        def remoteBranch = sh(script: "git rev-parse --abbrev-ref origin/${branchName}", returnStdout: true).trim()
         // Debugging: echo the repository URLs
         echo "Data Helper Repo URL: ${data_helper_repo_url}"
         echo "Platform App Repo URL: ${platform_app_url}"
-        echo "Branch Name: ${env.GIT_BRANCH}"
+        echo "Branch Name: ${remoteBranch}"
         echo "commit_hash: ${commitHash}"
         sh "printenv"
 
