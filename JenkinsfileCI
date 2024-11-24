@@ -25,7 +25,7 @@ node('master') {
     try {
         // Explicitly clone the public Datahelper repository
         stage('Clone Datahelper Repository') {
-            git branch: "${env.GIT_BRANCH}", url: "${env.data_helper_repo_url}"
+            git branch: "main", url: "https://github.com/maramvenkatareddy/node_js.git"
             echo "Checked out Datahelper Repository"
         }
 
