@@ -27,6 +27,8 @@ node('master') {
     }
 
     try {
+         def GIT_COMMIT_HASH = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+         def BRANCH_NAME = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
         // Debugging: echo the repository URLs
         echo "Data Helper Repo URL: ${data_helper_repo_url}"
         echo "Platform App Repo URL: ${platform_app_url}"
@@ -43,7 +45,8 @@ node('master') {
         stage('Clone Datahelper Repository') {
             dir('repo1') {
                 echo "Cloning repository: ${data_helper_repo_url}"
-                echo "Branch Name: ${branchName}"
+                echo "Branch Name: ${BRANCH_NAME}"
+                echo "commit_hash: ${GIT_COMMIT_HASH}"
                 git branch: "main", url: "https://github.com/maramvenkatareddy/node_js.git"
                 echo "Checked out Datahelper Repository"
                 sh "ls"
