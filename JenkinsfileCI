@@ -10,7 +10,7 @@ def notifySlack(String buildStatus = 'SUCCESS') {
         *Build Status*: ${buildStatus}
         *Job*: ${env.JOB_NAME}
         *Build Number*: #${env.BUILD_NUMBER}
-        *Branch*: ${gitbranch}
+       // *Branch*: ${gitbranch}
         *Duration*: ${currentBuild.durationString}
         *Build URL*: ${env.BUILD_URL}
         *Environment*: ${ENVIRONMENT}
@@ -26,7 +26,7 @@ node('master') {
     checkout scm
     def data_helper_repo_url = 'https://github.com/maramvenkatareddy/node_js.git'
     def platform_app_url = 'https://github.com/maramvenkatareddy/java-web-app.git'
-    def gitbranch = 'main'
+    def gitbranch = 'sample-test'
     def GITHUB_TOKEN = credentials('ggit')
      properties([
         pipelineTriggers([
