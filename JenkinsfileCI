@@ -98,12 +98,13 @@ node('master') {
 
                 // Replace 'tag' placeholder with the desired image version (e.g., 1.23)
                 // sh "sed -i 's|image: nginx:.*|image: nginx:${env.IMAGE_TAG}|g' ${deploymentFile}"
-                sh "sed -i 's|image: [^ ]*|image: ${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash}|g' ${deploymentFile}"
+                sh "sed -i 's|image: [^ ]*|image: \"${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash}\"|g' ${deploymentFile}"
 
                 // Git commit and push using the credentials
                 sh 'git add eks/prod/deployment.yaml'
                 sh 'git commit -m "Updated to the newer version"'
                 // Use the credentials for Git push
+                sh 'cat ${deploymentFile}'
             } else {
                 error "Deployment file ${deploymentFile} not found!"
             }
