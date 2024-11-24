@@ -1,5 +1,6 @@
 node('master') {
     checkout scm
+    echo "GIT_COMMIT: ${env.GIT_COMMIT}"
     def data_helper_repo_url = 'https://github.com/maramvenkatareddy/node_js.git'
     def platform_app_url = 'https://github.com/maramvenkatareddy/java-web-app.git'
      properties([
