@@ -2,7 +2,7 @@
 node('master') {
     // Environment variables
     environment {
-        data_helper_repo_url = https://github.com/maramvenkatareddy/node_js.git"
+        data_helper_repo_url = "https://github.com/maramvenkatareddy/node_js.git"
         platform_app_url = "https://github.com/maramvenkatareddy/java-web-app.git"
         //GITHUB_TOKEN = credentials('ggit')
     }
