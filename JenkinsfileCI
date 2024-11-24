@@ -4,7 +4,7 @@ node('master') {
         data_helper_repo_url = "https://github.com/maramvenkatareddy/node_js.git"
         platform_app_url = "https://github.com/maramvenkatareddy/java-web-app.git"
     }
-     pollSCM('* * * * *') // Poll every 5 minutes for the platform_app_url repository
+     properties ([pipelineTriggers([cron('* * * * *')])])
 
     try {
         // Read the config file and set the environment
