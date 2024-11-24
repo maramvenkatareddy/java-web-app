@@ -1,8 +1,8 @@
 node('master') {
     checkout scm
     environment {
-        data_helper_repo_url = "https://github.com/maramvenkatareddy/node_js.git"
-        platform_app_url = "https://github.com/maramvenkatareddy/java-web-app.git"
+       def data_helper_repo_url = "https://github.com/maramvenkatareddy/node_js.git"
+       def platform_app_url = "https://github.com/maramvenkatareddy/java-web-app.git"
     }
      properties([
         pipelineTriggers([
@@ -29,8 +29,8 @@ node('master') {
 
     try {
         // Debugging: echo the repository URLs
-        echo "Data Helper Repo URL: ${env.data_helper_repo_url}"
-        echo "Platform App Repo URL: ${env.platform_app_url}"
+        echo "Data Helper Repo URL: data_helper_repo_url"
+        echo "Platform App Repo URL: platform_app_url"
 
         // Clone Datahelper Repository
         stage('Clone Platform Application Repository') {
