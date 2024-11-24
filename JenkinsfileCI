@@ -26,8 +26,8 @@ node('master') {
     }
 
     try {
-         def GIT_COMMIT_HASH = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
-         def BRANCH_NAME = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+        def commitHash = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
+        def branchName = sh(script: "git rev-parse --abbrev-ref HEAD", returnStdout: true).trim()
         // Debugging: echo the repository URLs
         echo "Data Helper Repo URL: ${data_helper_repo_url}"
         echo "Platform App Repo URL: ${platform_app_url}"
