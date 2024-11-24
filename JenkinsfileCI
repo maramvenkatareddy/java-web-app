@@ -21,9 +21,14 @@ node('master') {
     }
 
     try {
+        // Debugging: echo the repository URLs
+        echo "Data Helper Repo URL: ${env.data_helper_repo_url}"
+        echo "Platform App Repo URL: ${env.platform_app_url}"
+
         // Clone Datahelper Repository
         stage('Clone Datahelper Repository') {
             dir('repo1') {
+                echo "Cloning repository: ${env.data_helper_repo_url}"
                 git branch: "main", url: env.data_helper_repo_url
                 echo "Checked out Datahelper Repository"
             }
@@ -32,6 +37,7 @@ node('master') {
         // Clone Platform Application Repository
         stage('Clone Platform Application Repository') {
             dir('repo2') {
+                echo "Cloning repository: ${env.platform_app_url}"
                 git branch: "main", url: env.platform_app_url
                 echo "Checked out Platform Application Repository"
             }
