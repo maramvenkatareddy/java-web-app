@@ -35,6 +35,9 @@ node('master') {
                 sh "ls"
             }
         }
+        stage('build the dependency') {
+            sh "npm install"
+        }
 
         // Clone Platform Application Repository
         stage('Clone Platform Application Repository') {
@@ -44,6 +47,9 @@ node('master') {
                 echo "Checked out Platform Application Repository"
                 sh "ls"
             }
+        }
+        stage('buidl') {
+            sh "mvn clean install"
         }
 
         // Other stages go here...
