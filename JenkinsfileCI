@@ -1,6 +1,7 @@
 node('master') {
     checkout scm
-    withEnv(['data_helper_repo_url=https://github.com/maramvenkatareddy/node_js.git', 'platform_app_url=https://github.com/maramvenkatareddy/java-web-app.git'])
+    def data_helper_repo_url = 'https://github.com/maramvenkatareddy/node_js.git'
+    def platform_app_url = 'https://github.com/maramvenkatareddy/java-web-app.git'
      properties([
         pipelineTriggers([
             // Poll SCM for changes in the specific repository
