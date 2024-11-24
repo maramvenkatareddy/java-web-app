@@ -31,6 +31,8 @@ node('master') {
         // Debugging: echo the repository URLs
         echo "Data Helper Repo URL: ${data_helper_repo_url}"
         echo "Platform App Repo URL: ${platform_app_url}"
+        echo "Branch Name: ${branchName}"
+        echo "commit_hash: ${commitHash}"
 
         // Clone Datahelper Repository
         stage('Clone Platform Application Repository') {
