@@ -4,10 +4,11 @@ node('master') {
     environment {
         data_helper_repo_url = "https://github.com/maramvenkatareddy/node_js.git"
         platform_app_url = "https://github.com/maramvenkatareddy/java-web-app.git"
-        //GITHUB_TOKEN = credentials('ggit')
+        // Uncomment if needed: GITHUB_TOKEN = credentials('ggit')
     }
+
     try {
-        // Read the config file
+        // Read the config file and set the environment
         property = readYaml file: "config.yaml"
         if (ENVIRONMENT == "qa") {
             config = property.qa
@@ -16,44 +17,53 @@ node('master') {
             config = property.prod
             echo "Config: ${config}"
         } else {
-            error "ENVIRONMENT NOT SET"
+            error "ENVIRONMENT variable not set or invalid!"
         }
     } catch (Exception e) {
-        error "Failed at reading config file.\n${e}"
+        error "Failed at reading config file. Error: ${e}"
     }
 
     try {
+        // Stages for the pipeline
         stage('Clone Datahelper Repository') {
             git branch: "${BRANCH_NAME}", url: "${data_helper_repo_url}"
             echo "Checked out Datahelper Repository"
         }
+
         stage('Build Datahelper Repository') {
             echo "Building Datahelper Repository"
-          //  if (fileExists("pom.xml")) {
-          //      sh 'mvn clean install -DskipTests'
-              sh 'npm install'
+            // Changed logic to handle Node.js builds
+            if (fileExists("package.json")) {
+                sh 'npm install'
+                sh 'npm run build' // Replace with your custom build command if required
+            } else {
+                error "package.json not found in the repository!"
             }
         }
+
         stage('Clone Platform Repository') {
             git branch: "${BRANCH_NAME}", url: "${platform_app_url}"
             echo "Checked out Platform Repository"
         }
+
         stage('Build Platform Repository') {
             echo "Building Platform Repository"
             if (fileExists("pom.xml")) {
                 sh 'mvn clean install -DskipTests'
+            } else {
+                error "pom.xml not found in the repository!"
             }
         }
+
         stage('Docker Build') {
             dir("${config.path}") {
-                if (ENVIRONMENT == "qa") {
-                    sh "docker build -t ${config.ecr_url}/${config.repo_name}:${BRANCH_NAME}-${GIT_COMMIT} -f Dockerfile.qa ."
-                } else if (ENVIRONMENT == "prod") {
-                    sh "docker build -t ${config.ecr_url}/${config.repo_name}:${BRANCH_NAME}-${GIT_COMMIT} -f Dockerfile.prod ."
-                }
+                // Conditional Dockerfile selection based on the environment
+                def dockerfile = ENVIRONMENT == "qa" ? "Dockerfile.qa" : "Dockerfile.prod"
+                sh "docker build -t ${config.ecr_url}/${config.repo_name}:${BRANCH_NAME}-${GIT_COMMIT} -f ${dockerfile} ."
                 sh "docker tag ${config.ecr_url}/${config.repo_name}:${BRANCH_NAME}-${GIT_COMMIT} ${config.ecr_url}/${config.repo_name}:latest"
             }
         }
+
         stage('Docker Image Push to ECR Repo') {
             dir("${config.path}") {
                 sh "aws ecr get-login-password --region ${config.region} | docker login --username AWS --password-stdin ${config.ecr_url}"
@@ -61,7 +71,8 @@ node('master') {
                 sh "docker push ${config.ecr_url}/${config.repo_name}:latest"
             }
         }
+
     } catch (Exception e) {
-        error "Pipeline failed at stage '${current}' with error: ${e}"
+        error "Pipeline failed with error: ${e}"
     }
 }
