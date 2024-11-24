@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: platform
-        image: 619071347058.dkr.ecr.us-west-2.amazonaws.com/prod-video:prod-e3946f932bfb3c67ed7457efa003c643e3798e6a/prod-video:prod-5a298037b517bf7aaea83fea2dfbb4af597d3ee8/prod-video:prod-07d6120f1ed22ae5ad93d29d8a59e87916d953d6/prod-video:prod-9f1b8d19c1be6a6f9f5c95910599aa83a43c0127/prod-video:prod-6687198f2a5bf9c8795f3b3661be9e589e26ab80/prod-video:prod-a7ce80dc8caf21a5afb5b8b541ad64a1487ec293/prod-video:prod-c6bb1cc44c833be664aa5e98ec4aed25a6c95091/prod-video:prod-d9d4d966fb8dfbf5b245b137e984a35a05a95ece/prod-video:prod-1c3f90d83050cb97f2f9c7f27016ff9aa72a366c/prod-video:prod-6a8fb882fdd8456d9ce3002c13fac454c9ecdeae
+        image: 619071347058.dkr.ecr.us-west-2.amazonaws.com/prod-video:prod-be3d78a2ed4e79ec568912c4bb13b8e4b4338a63/prod-video:prod-e3946f932bfb3c67ed7457efa003c643e3798e6a/prod-video:prod-5a298037b517bf7aaea83fea2dfbb4af597d3ee8/prod-video:prod-07d6120f1ed22ae5ad93d29d8a59e87916d953d6/prod-video:prod-9f1b8d19c1be6a6f9f5c95910599aa83a43c0127/prod-video:prod-6687198f2a5bf9c8795f3b3661be9e589e26ab80/prod-video:prod-a7ce80dc8caf21a5afb5b8b541ad64a1487ec293/prod-video:prod-c6bb1cc44c833be664aa5e98ec4aed25a6c95091/prod-video:prod-d9d4d966fb8dfbf5b245b137e984a35a05a95ece/prod-video:prod-1c3f90d83050cb97f2f9c7f27016ff9aa72a366c/prod-video:prod-6a8fb882fdd8456d9ce3002c13fac454c9ecdeae
         ports:
         - containerPort: 8080
