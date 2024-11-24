@@ -27,7 +27,7 @@ node('master') {
     try {
         // Stages for the pipeline
         stage('Clone Datahelper Repository') {
-            git branch: "${env.GIT_BRANCH}", url: "${data_helper_repo_url}"
+            git branch: "${env.GIT_BRANCH}", url: "${env.data_helper_repo_url}"
             echo "Checked out Datahelper Repository"
         }
 
@@ -43,7 +43,7 @@ node('master') {
         }
 
         stage('Clone Platform Repository') {
-            git branch: "${env.GIT_BRANCH}", url: "${platform_app_url}"
+            git branch: "${env.GIT_BRANCH}", url: "${env.platform_app_url}"
             echo "Checked out Platform Repository"
         }
 
