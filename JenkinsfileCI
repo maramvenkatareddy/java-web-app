@@ -23,18 +23,20 @@ node('master') {
     }
 
     try {
-        // Explicitly clone the public Datahelper repository
+        // Clone Datahelper Repository
         stage('Clone Datahelper Repository') {
-            steps {
-                dir('repo1') {
-                    git branch: "main", url: "https://github.com/maramvenkatareddy/node_js.git"
-                    echo "Checked out Datahelper Repository"
-                }
+            dir('repo1') {
+                git branch: "main", url: data_helper_repo_url
+                echo "Checked out Datahelper Repository"
             }
         }
-      stage('Clone Datahelper Repository') {
-            git branch: "main", url: "https://github.com/maramvenkatareddy/java-web-app.git"
-            echo "Checked out Datahelper Repository"
+
+        // Clone Platform Application Repository
+        stage('Clone Platform Application Repository') {
+            dir('repo2') {
+                git branch: "main", url: platform_app_url
+                echo "Checked out Platform Application Repository"
+            }
         }
 
         // Other stages go here...
