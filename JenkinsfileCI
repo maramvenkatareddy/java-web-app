@@ -33,6 +33,14 @@ node('master') {
         echo "Platform App Repo URL: ${env.platform_app_url}"
 
         // Clone Datahelper Repository
+        stage('Clone Platform Application Repository') {
+            dir('repo2') {
+                echo "Cloning repository: ${env.platform_app_url}"
+                git branch: "main", url: "https://github.com/maramvenkatareddy/java-web-app.git"
+                echo "Checked out Platform Application Repository"
+                sh "ls"
+            }
+        }
         stage('Clone Datahelper Repository') {
             dir('repo1') {
                 echo "Cloning repository: ${env.data_helper_repo_url}"
@@ -46,16 +54,7 @@ node('master') {
                 sh "npm install"
             }
         }
-
-        // Clone Platform Application Repository
-        stage('Clone Platform Application Repository') {
-            dir('repo2') {
-                echo "Cloning repository: ${env.platform_app_url}"
-                git branch: "main", url: "https://github.com/maramvenkatareddy/java-web-app.git"
-                echo "Checked out Platform Application Repository"
-                sh "ls"
-            }
-        }
+    
         stage('buidl') {
             dir('repo2') {
                 sh "mvn clean install"
