@@ -24,8 +24,8 @@ def notifySlack(String buildStatus = 'SUCCESS') {
 }
 node('master') {
     checkout scm
-    echo "Current Branch: ${env.GIT_BRANCH}"
-    echo "Current Branch: ${env.BRANCH_NAME}"
+    def CurrentBranch = "${env.GIT_BRANCH}"
+    def CurrentBranch_1 = "${env.BRANCH_NAME}"
     def data_helper_repo_url = 'https://github.com/maramvenkatareddy/node_js.git'
     def platform_app_url = 'https://github.com/maramvenkatareddy/java-web-app.git'
     def GITHUB_TOKEN = credentials('ggit')
@@ -57,6 +57,8 @@ node('master') {
         // Debugging: echo the repository URLs
         echo "Data Helper Repo URL: ${data_helper_repo_url}"
         echo "Platform App Repo URL: ${platform_app_url}"
+        echo "curren branch: ${CurrentBranch}"
+        echo "vv branch: ${CurrentBranch_1}"
         echo "commit_hash: ${commitHash}"
         sh "printenv"
 
