@@ -36,7 +36,9 @@ node('master') {
             }
         }
         stage('build the dependency') {
-            sh "npm install"
+            dir('repo1') {
+                sh "npm install"
+            }
         }
 
         // Clone Platform Application Repository
@@ -49,7 +51,9 @@ node('master') {
             }
         }
         stage('buidl') {
-            sh "mvn clean install"
+            dir('repo2') {
+                sh "mvn clean install"
+            }
         }
 
         // Other stages go here...
