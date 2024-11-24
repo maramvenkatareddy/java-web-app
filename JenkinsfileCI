@@ -33,6 +33,7 @@ node('master') {
         echo "Platform App Repo URL: ${platform_app_url}"
         echo "Branch Name: ${branchName}"
         echo "commit_hash: ${commitHash}"
+        sh "printenv"
 
         // Clone Datahelper Repository
         stage('Clone Platform Application Repository') {
