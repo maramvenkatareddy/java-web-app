@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: platform
-        image: 619071347058.dkr.ecr.us-west-2.amazonaws.com/prod-video:prod-c6bb1cc44c833be664aa5e98ec4aed25a6c95091/prod-video:prod-d9d4d966fb8dfbf5b245b137e984a35a05a95ece/prod-video:prod-1c3f90d83050cb97f2f9c7f27016ff9aa72a366c/prod-video:prod-6a8fb882fdd8456d9ce3002c13fac454c9ecdeae
+        image: 619071347058.dkr.ecr.us-west-2.amazonaws.com/prod-video:prod-a7ce80dc8caf21a5afb5b8b541ad64a1487ec293/prod-video:prod-c6bb1cc44c833be664aa5e98ec4aed25a6c95091/prod-video:prod-d9d4d966fb8dfbf5b245b137e984a35a05a95ece/prod-video:prod-1c3f90d83050cb97f2f9c7f27016ff9aa72a366c/prod-video:prod-6a8fb882fdd8456d9ce3002c13fac454c9ecdeae
         ports:
         - containerPort: 8080
