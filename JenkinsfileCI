@@ -29,7 +29,7 @@ node('master') {
         stage('Clone Datahelper Repository') {
             dir('repo1') {
                 echo "Cloning repository: ${env.data_helper_repo_url}"
-                git branch: "main", url: env.data_helper_repo_url
+                git branch: "main", url: "https://github.com/maramvenkatareddy/node_js.git"
                 echo "Checked out Datahelper Repository"
             }
         }
@@ -38,7 +38,7 @@ node('master') {
         stage('Clone Platform Application Repository') {
             dir('repo2') {
                 echo "Cloning repository: ${env.platform_app_url}"
-                git branch: "main", url: env.platform_app_url
+                git branch: "main", url: "https://github.com/maramvenkatareddy/java-web-app.git"
                 echo "Checked out Platform Application Repository"
             }
         }
