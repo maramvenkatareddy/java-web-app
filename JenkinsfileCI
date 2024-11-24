@@ -1,20 +1,14 @@
-#!/usr/bin/env groovy
-
 node('master') {
-    // Checkout SCM repository if it's the triggering repository
-    // checkout scm
+    checkout scm  // Use SCM configured in Jenkins job for repository URL
 
-    // Environment variables
     environment {
         data_helper_repo_url = "https://github.com/maramvenkatareddy/node_js.git"
         platform_app_url = "https://github.com/maramvenkatareddy/java-web-app.git"
-        // Uncomment if needed: GITHUB_TOKEN = credentials('ggit')
     }
 
     try {
         // Read the config file and set the environment
-        def property = readYaml file: "config.yaml"
-        def config
+        property = readYaml file: "config.yaml"
         if (ENVIRONMENT == "qa") {
             config = property.qa
             echo "Config: ${config}"
@@ -24,57 +18,18 @@ node('master') {
         } else {
             error "ENVIRONMENT variable not set or invalid!"
         }
+    } catch (Exception e) {
+        error "Failed at reading config file. Error: ${e}"
+    }
 
-        // Clone Datahelper Repository
+    try {
+        // Explicitly clone the public Datahelper repository
         stage('Clone Datahelper Repository') {
-            git branch: "${env.GIT_BRANCH ?: 'main'}", url: "${env.data_helper_repo_url}"
+            git branch: "${env.GIT_BRANCH}", url: "${env.data_helper_repo_url}"
             echo "Checked out Datahelper Repository"
         }
 
-        // Build Datahelper Repository (Node.js)
-        stage('Build Datahelper Repository') {
-            echo "Building Datahelper Repository"
-            if (fileExists("package.json")) {
-                sh 'npm install'
-                sh 'npm run build' // Replace with your custom build command if required
-            } else {
-                error "package.json not found in the repository!"
-            }
-        }
-
-        // Clone Platform Repository
-        stage('Clone Platform Repository') {
-            git branch: "${env.GIT_BRANCH ?: 'main'}", url: "${env.platform_app_url}"
-            echo "Checked out Platform Repository"
-        }
-
-        // Build Platform Repository (Java Maven)
-        stage('Build Platform Repository') {
-            echo "Building Platform Repository"
-            if (fileExists("pom.xml")) {
-                sh 'mvn clean install -DskipTests'
-            } else {
-                error "pom.xml not found in the repository!"
-            }
-        }
-
-        // Docker Build
-        stage('Docker Build') {
-            dir("${config.path}") {
-                def dockerfile = ENVIRONMENT == "qa" ? "Dockerfile.qa" : "Dockerfile.prod"
-                sh "docker build -t ${config.ecr_url}/${config.repo_name}:${BRANCH_NAME}-${GIT_COMMIT} -f ${dockerfile} ."
-                sh "docker tag ${config.ecr_url}/${config.repo_name}:${BRANCH_NAME}-${GIT_COMMIT} ${config.ecr_url}/${config.repo_name}:latest"
-            }
-        }
-
-        // Docker Image Push to ECR Repo
-        stage('Docker Image Push to ECR Repo') {
-            dir("${config.path}") {
-                sh "aws ecr get-login-password --region ${config.region} | docker login --username AWS --password-stdin ${config.ecr_url}"
-                sh "docker push ${config.ecr_url}/${config.repo_name}:${BRANCH_NAME}-${GIT_COMMIT}"
-                sh "docker push ${config.ecr_url}/${config.repo_name}:latest"
-            }
-        }
+        // Other stages go here...
 
     } catch (Exception e) {
         error "Pipeline failed with error: ${e}"
