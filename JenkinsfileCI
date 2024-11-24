@@ -75,7 +75,7 @@ node('master') {
               stage('Docker Image Push to Ecr') {
                 current = "Stage Docker Image Push to Ecr"
                 sh "aws ecr get-login-password --region ${config.region} | docker login --username AWS --password-stdin ${config.ecr_url}"
-                sh "docker push ${config.ecr_url}/${config.repo_name}:main-1}"
+                sh "docker push ${config.ecr_url}/${config.repo_name}:main-1"
                 sh "docker push ${config.ecr_url}/${config.repo_name}:latest"
             }
           }
