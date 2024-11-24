@@ -1,0 +1,67 @@
+#!/usr/bin/env groovy
+node('master') {
+    // Environment variables
+    environment {
+        data_helper_repo_url = https://github.com/maramvenkatareddy/node_js.git"
+        platform_app_url = "https://github.com/maramvenkatareddy/java-web-app.git"
+        //GITHUB_TOKEN = credentials('ggit')
+    }
+    try {
+        // Read the config file
+        property = readYaml file: "config.yaml"
+        if (ENVIRONMENT == "qa") {
+            config = property.qa
+            echo "Config: ${config}"
+        } else if (ENVIRONMENT == "prod") {
+            config = property.prod
+            echo "Config: ${config}"
+        } else {
+            error "ENVIRONMENT NOT SET"
+        }
+    } catch (Exception e) {
+        error "Failed at reading config file.\n${e}"
+    }
+
+    try {
+        stage('Clone Datahelper Repository') {
+            git branch: "${BRANCH_NAME}", url: "${data_helper_repo_url}"
+            echo "Checked out Datahelper Repository"
+        }
+        stage('Build Datahelper Repository') {
+            echo "Building Datahelper Repository"
+          //  if (fileExists("pom.xml")) {
+          //      sh 'mvn clean install -DskipTests'
+              sh 'npm install'
+            }
+        }
+        stage('Clone Platform Repository') {
+            git branch: "${BRANCH_NAME}", url: "${platform_app_url}"
+            echo "Checked out Platform Repository"
+        }
+        stage('Build Platform Repository') {
+            echo "Building Platform Repository"
+            if (fileExists("pom.xml")) {
+                sh 'mvn clean install -DskipTests'
+            }
+        }
+        stage('Docker Build') {
+            dir("${config.path}") {
+                if (ENVIRONMENT == "qa") {
+                    sh "docker build -t ${config.ecr_url}/${config.repo_name}:${BRANCH_NAME}-${GIT_COMMIT} -f Dockerfile.qa ."
+                } else if (ENVIRONMENT == "prod") {
+                    sh "docker build -t ${config.ecr_url}/${config.repo_name}:${BRANCH_NAME}-${GIT_COMMIT} -f Dockerfile.prod ."
+                }
+                sh "docker tag ${config.ecr_url}/${config.repo_name}:${BRANCH_NAME}-${GIT_COMMIT} ${config.ecr_url}/${config.repo_name}:latest"
+            }
+        }
+        stage('Docker Image Push to ECR Repo') {
+            dir("${config.path}") {
+                sh "aws ecr get-login-password --region ${config.region} | docker login --username AWS --password-stdin ${config.ecr_url}"
+                sh "docker push ${config.ecr_url}/${config.repo_name}:${BRANCH_NAME}-${GIT_COMMIT}"
+                sh "docker push ${config.ecr_url}/${config.repo_name}:latest"
+            }
+        }
+    } catch (Exception e) {
+        error "Pipeline failed at stage '${current}' with error: ${e}"
+    }
+}
