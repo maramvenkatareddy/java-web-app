@@ -28,6 +28,10 @@ node('master') {
             git branch: "main", url: "https://github.com/maramvenkatareddy/node_js.git"
             echo "Checked out Datahelper Repository"
         }
+      stage('Clone Datahelper Repository') {
+            git branch: "main", url: "https://github.com/maramvenkatareddy/java-web-app.git"
+            echo "Checked out Datahelper Repository"
+        }
 
         // Other stages go here...
 
