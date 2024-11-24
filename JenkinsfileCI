@@ -4,10 +4,7 @@ node('master') {
         data_helper_repo_url = "https://github.com/maramvenkatareddy/node_js.git"
         platform_app_url = "https://github.com/maramvenkatareddy/java-web-app.git"
     }
-    triggers {
-        // **Polling SCM for changes to the platform_app_url repo only**:
-        pollSCM('* * * * *')  // Poll every 5 minutes for platform_app_url repository
-    }
+     pollSCM('* * * * *') // Poll every 5 minutes for the platform_app_url repository
 
     try {
         // Read the config file and set the environment
