@@ -32,7 +32,7 @@ node('master') {
                 echo "Cloning repository: ${env.data_helper_repo_url}"
                 git branch: "main", url: "https://github.com/maramvenkatareddy/node_js.git"
                 echo "Checked out Datahelper Repository"
-                sh "ls'
+                sh "ls"
             }
         }
 
