@@ -1,5 +1,6 @@
 #!/usr/bin/env groovy
 node('master') {
+    checkout scm
     // Environment variables
     environment {
         data_helper_repo_url = "https://github.com/maramvenkatareddy/node_js.git"
