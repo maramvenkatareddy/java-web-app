@@ -2,7 +2,6 @@ node('master') {
     checkout scm
     def data_helper_repo_url = 'https://github.com/maramvenkatareddy/node_js.git'
     def platform_app_url = 'https://github.com/maramvenkatareddy/java-web-app.git'
-     def branchName = env.GIT_BRANCH.replaceFirst(/^.*\//, '')
      properties([
         pipelineTriggers([
             // Poll SCM for changes in the specific repository
