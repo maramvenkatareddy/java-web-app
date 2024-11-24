@@ -102,7 +102,7 @@ node('master') {
                     // sh "sed -i 's|image: [^ ]*|image: \"${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash}\"|g' ${deploymentFile}"
     
                     // Git commit and push using the credentials
-                    sh 'git add eks/prod/deployment.yaml'
+                    sh 'git add .'
                     sh 'git commit -m "Updated to the newer version"'
                     // Use the credentials for Git push
                     sh "cat ${deploymentFile}"
