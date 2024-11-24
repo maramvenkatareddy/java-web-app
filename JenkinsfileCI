@@ -24,10 +24,9 @@ def notifySlack(String buildStatus = 'SUCCESS') {
 }
 node('master') {
     checkout scm
-    def CurrentBranch = "${env.GIT_BRANCH}"
-    def CurrentBranch_1 = "${env.BRANCH_NAME}"
     def data_helper_repo_url = 'https://github.com/maramvenkatareddy/node_js.git'
     def platform_app_url = 'https://github.com/maramvenkatareddy/java-web-app.git'
+    def git_branch = 'main'
     def GITHUB_TOKEN = credentials('ggit')
      properties([
         pipelineTriggers([
@@ -57,8 +56,6 @@ node('master') {
         // Debugging: echo the repository URLs
         echo "Data Helper Repo URL: ${data_helper_repo_url}"
         echo "Platform App Repo URL: ${platform_app_url}"
-        echo "curren branch: ${CurrentBranch}"
-        echo "vv branch: ${CurrentBranch_1}"
         echo "commit_hash: ${commitHash}"
         sh "printenv"
 
@@ -66,7 +63,7 @@ node('master') {
         stage('Clone Platform Application Repository') {
             dir('repo2') {
                 echo "Cloning repository: ${platform_app_url}"
-                git branch: "main", url: "https://github.com/maramvenkatareddy/java-web-app.git"
+                git branch: "${git_branch}", url: "${platform_app_url}"
                 echo "Checked out Platform Application Repository"
                 sh "ls"
             }
@@ -75,7 +72,7 @@ node('master') {
             dir('repo1') {
                 echo "Cloning repository: ${data_helper_repo_url}"
                 echo "commit_hash: ${commitHash}"
-                git branch: "main", url: "https://github.com/maramvenkatareddy/node_js.git"
+                git branch: "${git_branch}", url: "${data_helper_repo_url}"
                 echo "Checked out Datahelper Repository"
                 sh "ls"
             }
