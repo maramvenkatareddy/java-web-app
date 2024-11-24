@@ -85,28 +85,30 @@ node('master') {
           }
         }
         stage('Update Image Tag in Deployment File') {
-            // Set Git configuration
-            sh 'git config user.email "venkat@gmail.com"'
-            sh 'git config user.name "venkat"'
-
-            // Define the deployment file path
-            def deploymentFile = 'eks/prod/deployment.yaml'
-
-            // Ensure the deployment file exists
-            if (fileExists(deploymentFile)) {
-                echo "Updating image tag in ${deploymentFile}"
-
-                // Replace 'tag' placeholder with the desired image version (e.g., 1.23)
-                sh "sed -i 's|image: 619071347058.dkr.ecr.us-west-2.amazonaws.com:.*|image: 619071347058.dkr.ecr.us-west-2.amazonaws.com/${config.repo_name}:${config.environment}-${commitHash}|g' ${deploymentFile}"
-                // sh "sed -i 's|image: [^ ]*|image: \"${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash}\"|g' ${deploymentFile}"
-
-                // Git commit and push using the credentials
-                sh 'git add eks/prod/deployment.yaml'
-                sh 'git commit -m "Updated to the newer version"'
-                // Use the credentials for Git push
-                sh "cat ${deploymentFile}"
-            } else {
-                error "Deployment file ${deploymentFile} not found!"
+            dir('repo2') {
+                    // Set Git configuration
+                sh 'git config user.email "venkat@gmail.com"'
+                sh 'git config user.name "venkat"'
+    
+                // Define the deployment file path
+                def deploymentFile = 'eks/prod/deployment.yaml'
+    
+                // Ensure the deployment file exists
+                if (fileExists(deploymentFile)) {
+                    echo "Updating image tag in ${deploymentFile}"
+    
+                    // Replace 'tag' placeholder with the desired image version (e.g., 1.23)
+                    sh "sed -i 's|image: 619071347058.dkr.ecr.us-west-2.amazonaws.com:.*|image: 619071347058.dkr.ecr.us-west-2.amazonaws.com/${config.repo_name}:${config.environment}-${commitHash}|g' ${deploymentFile}"
+                    // sh "sed -i 's|image: [^ ]*|image: \"${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash}\"|g' ${deploymentFile}"
+    
+                    // Git commit and push using the credentials
+                    sh 'git add eks/prod/deployment.yaml'
+                    sh 'git commit -m "Updated to the newer version"'
+                    // Use the credentials for Git push
+                    sh "cat ${deploymentFile}"
+                } else {
+                    error "Deployment file ${deploymentFile} not found!"
+                }
             }
         }
 
