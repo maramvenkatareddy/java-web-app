@@ -98,7 +98,7 @@ node('master') {
                     echo "Updating image tag in ${deploymentFile}"
     
                     // Replace 'tag' placeholder with the desired image version (e.g., 1.23)
-                    sh "sed -i 's|image: 619071347058.dkr.ecr.us-west-2.amazonaws.com:|image: 619071347058.dkr.ecr.us-west-2.amazonaws.com/prod-video:${config.environment}-${commitHash}|g' ${deploymentFile}"
+                    sh "sed -i 's|image: 619071347058.dkr.ecr.us-west-2.amazonaws.com|image: 619071347058.dkr.ecr.us-west-2.amazonaws.com/prod-video:${config.environment}-${commitHash}|g' ${deploymentFile}"
                     // sh "sed -i 's|image: [^ ]*|image: \"${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash}\"|g' ${deploymentFile}"
     
                     // Git commit and push using the credentials
