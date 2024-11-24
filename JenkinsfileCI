@@ -62,11 +62,11 @@ node('master') {
           dir("${config.path}") {
             current = "Stage Docker build"
              if (ENVIRONMENT == "qa") {
-                sh "docker build -t ${config.ecr_url}/${config.repo_name}:main-${gitscm.GIT_COMMIT} -f Dockerfile.qa ."
+                sh "docker build -t ${config.ecr_url}/${config.repo_name}:main-1 -f Dockerfile.qa ."
              } else if (ENVIRONMENT == "prod") { 
-                sh "docker build -t ${config.ecr_url}/${config.repo_name}:${GIT_BRANCH[1]}-${gitscm.GIT_COMMIT} -f Dockerfile.prod ."
+                sh "docker build -t ${config.ecr_url}/${config.repo_name}:${GIT_BRANCH[1]}-1 -f Dockerfile.prod ."
              }
-            sh "docker tag ${config.ecr_url}/${config.repo_name}:${GIT_BRANCH[1]}-${gitscm.GIT_COMMIT} ${config.ecr_url}/${config.repo_name}:latest"
+            sh "docker tag ${config.ecr_url}/${config.repo_name}:main-1 ${config.ecr_url}/${config.repo_name}:latest"
           }
         }
   
@@ -75,7 +75,7 @@ node('master') {
               stage('Docker Image Push to Ecr') {
                 current = "Stage Docker Image Push to Ecr"
                 sh "aws ecr get-login-password --region ${config.region} | docker login --username AWS --password-stdin ${config.ecr_url}"
-                sh "docker push ${config.ecr_url}/${config.repo_name}:${GIT_BRANCH[1]}-${gitscm.GIT_COMMIT}"
+                sh "docker push ${config.ecr_url}/${config.repo_name}:main-1}"
                 sh "docker push ${config.ecr_url}/${config.repo_name}:latest"
             }
           }
