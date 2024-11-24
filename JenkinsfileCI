@@ -1,3 +1,27 @@
+def notifySlack(String buildStatus = 'SUCCESS') {
+    def colorMap = [
+        'SUCCESS': 'good',
+        'FAILURE': 'danger',
+        'UNSTABLE': 'warning',
+        'ABORTED': '#808080'
+    ]
+    
+    def message = """
+        *Build Status*: ${buildStatus}
+        *Job*: ${env.JOB_NAME}
+        *Build Number*: #${env.BUILD_NUMBER}
+        *Branch*: ${env.BRANCH_NAME ?: 'N/A'}
+        *Duration*: ${currentBuild.durationString}
+        *Build URL*: ${env.BUILD_URL}
+        *Environment*: ${ENVIRONMENT}
+    """.stripIndent()
+    
+    slackSend(
+        channel: config.SLACK_CHANNEL,
+        color: colorMap[buildStatus],
+        message: message
+    )
+}
 node('master') {
     checkout scm
     def data_helper_repo_url = 'https://github.com/maramvenkatareddy/node_js.git'
@@ -118,9 +142,11 @@ node('master') {
             }
         }
 
-        // Other stages go here...
+        notifySlack('SUCCESS')
 
     } catch (Exception e) {
         error "Pipeline failed with error: ${e}"
+        notifySlack('FAILURE')
+        error "Your continuous build failed at ${current}: ${e.getMessage()}"
     }
 }
