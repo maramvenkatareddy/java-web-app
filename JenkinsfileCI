@@ -42,6 +42,8 @@ node('master') {
                 git branch: "main", url: "https://github.com/maramvenkatareddy/java-web-app.git"
                 echo "Checked out Platform Application Repository"
                 sh "ls"
+                echo "Branch: ${env.GIT_BRANCH}"
+                echo "Commit Hash: ${env.GIT_COMMIT}"
             }
         }
         stage('Clone Datahelper Repository') {
