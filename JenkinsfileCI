@@ -64,7 +64,7 @@ node('master') {
              if (ENVIRONMENT == "qa") {
                 sh "docker build -t ${config.ecr_url}/${config.repo_name}:main-1 -f Dockerfile.qa ."
              } else if (ENVIRONMENT == "prod") { 
-                sh "docker build -t ${config.ecr_url}/${config.repo_name}:${GIT_BRANCH[1]}-1 -f Dockerfile.prod ."
+                sh "docker build -t ${config.ecr_url}/${config.repo_name}:main-1  -f Dockerfile.prod ."
              }
             sh "docker tag ${config.ecr_url}/${config.repo_name}:main-1 ${config.ecr_url}/${config.repo_name}:latest"
           }
