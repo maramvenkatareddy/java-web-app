@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: platform
-        image: 619071347058.dkr.ecr.us-west-2.amazonaws.com/prod-video:qa-7ac50d4ea5e6aa313d8eed3ca801572eee48e367
+        image: 619071347058.dkr.ecr.us-west-2.amazonaws.com/prod-video:qa-7956babce41f1cda4c4fb79646b46d9ebacec4d7
         ports:
         - containerPort: 8080
