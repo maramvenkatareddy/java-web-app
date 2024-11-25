@@ -26,7 +26,7 @@ node('master') {
     checkout scm
     def data_helper_repo_url = 'https://github.com/maramvenkatareddy/node_js.git'
     def platform_app_url = 'https://github.com/maramvenkatareddy/java-web-app.git'
-    def gitbranch = 'main'
+   // def gitbranch = 'main'
     def GITHUB_TOKEN = credentials('ggit')
      properties([
         pipelineTriggers([
@@ -63,17 +63,17 @@ node('master') {
         stage('Clone Platform Application Repository') {
             dir('repo2') {
                 echo "Cloning repository: ${platform_app_url}"
-                git branch: "${gitbranch}", url: "${platform_app_url}"
+                git branch: 'main', url: "${platform_app_url}"
                 echo "Checked out Platform Application Repository"
                 sh "ls"
-                sh "git branch"
+               // sh "git branch"
             }
         }
         stage('Clone Datahelper Repository') {
             dir('repo1') {
                 echo "Cloning repository: ${data_helper_repo_url}"
                 echo "commit_hash: ${commitHash}"
-                git branch: "${gitbranch}", url: "${data_helper_repo_url}"
+                git branch: 'main', url: "${data_helper_repo_url}"
                 echo "Checked out Datahelper Repository"
                 sh "ls"
                 sh "git branch"
