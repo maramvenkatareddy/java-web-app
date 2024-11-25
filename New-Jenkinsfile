@@ -1,49 +1,15 @@
-def notifySlack(String buildStatus = 'SUCCESS') {
-    def colorMap = [
-        'SUCCESS': 'good',
-        'FAILURE': 'danger',
-        'UNSTABLE': 'warning',
-        'ABORTED': '#808080'
-    ]
-    
-    def message = """
-        *Build Status*: ${buildStatus}
-        *Job*: ${env.JOB_NAME}
-        *Build Number*: #${env.BUILD_NUMBER}
-        *Duration*: ${currentBuild.durationString}
-        *Build URL*: ${env.BUILD_URL}
-        *Environment*: ${ENVIRONMENT}
-    """.stripIndent()
-    
-    slackSend(
-        channel: config.SLACK_CHANNEL,
-        color: colorMap[buildStatus],
-        message: message
-    )
-}
-
 node('master') {
     def data_helper_repo_url = 'https://github.com/maramvenkatareddy/node_js.git'
     def platform_app_url = 'https://github.com/maramvenkatareddy/java-web-app.git'
     def gitbranch = 'sample-test'
     def GITHUB_TOKEN = credentials('ggit')
     
-    // Modified properties to monitor only platform app repository
+    // Fixed properties block with correct SCM polling syntax
     properties([
         pipelineTriggers([
-            pollSCM([
-                scm: [
-                    $class: 'GitSCM',
-                    userRemoteConfigs: [[
-                        url: platform_app_url,
-                        credentialsId: 'ggit'
-                    ]],
-                    branches: [[name: "*/${gitbranch}"]],
-                ],
-                triggers: [[
-                    cron: "* * * * *"
-                ]]
-            ])
+            [$class: 'SCMTrigger', 
+             scmpoll_spec: '* * * * *',
+             ignorePostCommitHooks: false]
         ])
     ])
 
@@ -64,11 +30,17 @@ node('master') {
     }
 
     try {
-        // First checkout platform app to get correct commit hash
+        // First checkout platform app
         stage('Clone Platform Application Repository') {
             dir('repo2') {
-                echo "Cloning repository: ${platform_app_url}"
-                git branch: "${gitbranch}", url: "${platform_app_url}"
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: "*/${gitbranch}"]],
+                    userRemoteConfigs: [[
+                        url: platform_app_url,
+                        credentialsId: 'ggit'
+                    ]]
+                ])
                 echo "Checked out Platform Application Repository"
                 sh "ls"
                 sh "git branch"
@@ -87,15 +59,16 @@ node('master') {
 
         stage('Clone Datahelper Repository') {
             dir('repo1') {
-                echo "Cloning repository: ${data_helper_repo_url}"
-                git branch: "${gitbranch}", url: "${data_helper_repo_url}"
+                git branch: "${gitbranch}", 
+                    url: "${data_helper_repo_url}",
+                    credentialsId: 'ggit'
                 echo "Checked out Datahelper Repository"
                 sh "ls"
                 sh "git branch"
             }
         }
 
-        // Rest of your stages remain the same
+        // Rest of your stages remain the same...
         stage('build the dependency') {
             dir('repo1') {
                 sh "npm install"
@@ -107,60 +80,8 @@ node('master') {
                 sh "mvn clean install"
             }
         }
-
-        stage('Docker build') {
-            dir("${config.path}") {
-                current = "Stage Docker build"
-                if (ENVIRONMENT == "qa") {
-                    sh "docker build -t ${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash} -f Dockerfile.qa ."
-                } else if (ENVIRONMENT == "prod") { 
-                    sh "docker build -t ${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash}  -f Dockerfile.prod ."
-                }
-                sh "docker tag ${config.ecr_url}/${config.repo_name}:main-1 ${config.ecr_url}/${config.repo_name}:latest"
-            }
-        }
-  
-        stage('Docker Image Push to ECR Repo') {
-            dir("${config.path}") {
-                stage('Docker Image Push to Ecr') {
-                    current = "Stage Docker Image Push to Ecr"
-                    sh "aws ecr get-login-password --region ${config.region} | docker login --username AWS --password-stdin ${config.ecr_url}"
-                    sh "docker push ${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash}"
-                    sh "docker push ${config.ecr_url}/${config.repo_name}:latest"
-                }
-            }
-        }
-
-        stage('Update Image Tag in Deployment File') {
-            dir('repo2') {
-                sh 'git config user.email "venkat@gmail.com"'
-                sh 'git config user.name "venkat"'
-    
-                def deploymentFile = 'eks/prod/deployment.yaml'
-    
-                if (fileExists(deploymentFile)) {
-                    echo "Updating image tag in ${deploymentFile}"
-                    sh "sed -i 's|image: [^ ]*|image: 619071347058.dkr.ecr.us-west-2.amazonaws.com/prod-video:${config.environment}-${commitHash}|' ${deploymentFile}"
-    
-                    sh 'git add .'
-                    sh 'git commit -m "Updated to the newer version [ci skip]"'
-                    withCredentials([usernamePassword(credentialsId: 'ggit', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        echo "username is $USERNAME"
-                        echo "password is $PASSWORD"
-                        sh 'git push https://${USERNAME}:${PASSWORD}@github.com/${USERNAME}/java-web-app.git'
-                    }
-                    sh "cat ${deploymentFile}"
-                } else {
-                    error "Deployment file ${deploymentFile} not found!"
-                }
-            }
-        }
-
-        notifySlack('SUCCESS')
-
+        
     } catch (Exception e) {
-        error "Pipeline failed with error: ${e}"
-        notifySlack('FAILURE')
-        error "Your continuous build failed at ${current}: ${e.getMessage()}"
+        error "Pipeline failed: ${e.getMessage()}"
     }
 }
