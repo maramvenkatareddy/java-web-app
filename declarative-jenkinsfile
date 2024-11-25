@@ -47,8 +47,14 @@ pipeline {
         }
         stage('clone the manifest files') {
             steps {
-                dir('k8s') {
-                    git branch: 'main', url: "${k8s_manifest_url}"
+                withCredentials([usernamePassword(credentialsId: 'ggit', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    dir('k8s') {
+                        git(
+                            branch: 'main',
+                            url: "${k8s_manifest_url}",
+                            credentialsId: 'ggit'
+                        )
+                    }
                 }
             }
         }
