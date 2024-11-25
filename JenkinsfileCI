@@ -10,7 +10,7 @@ def notifySlack(String buildStatus = 'SUCCESS') {
         *Build Status*: ${buildStatus}
         *Job*: ${env.JOB_NAME}
         *Build Number*: #${env.BUILD_NUMBER}
-        *Branch*: ${gitbranch}
+        //*Branch*: ${gitbranch}
         *Duration*: ${currentBuild.durationString}
         *Build URL*: ${env.BUILD_URL}
         *Environment*: ${ENVIRONMENT}
