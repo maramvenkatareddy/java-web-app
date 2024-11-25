@@ -138,7 +138,7 @@ pipeline {
                             withCredentials([usernamePassword(credentialsId: 'ggit', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                                 echo "username is $USERNAME"
                                 echo "password is $PASSWORD"
-                                sh "git push https://${USERNAME}:${PASSWORD}@github.com/${USERNAME}/java-web-app.git"
+                                sh "git push https://${USERNAME}:${PASSWORD}@github.com/${USERNAME}/sample-project.git"
                             }
         
                             // Print the contents of the deployment file for verification
