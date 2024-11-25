@@ -48,7 +48,7 @@ pipeline {
         stage('clone the manifest files') {
             steps {
                 dir('k8s') {
-                    git branch: 'main', url: "${platform_app_url}"
+                    git branch: 'main', url: "${k8s_manifest_url}"
                 }
             }
         }
