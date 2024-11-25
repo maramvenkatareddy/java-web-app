@@ -158,7 +158,7 @@ post {
                 *Build URL:*          ${env.BUILD_URL}
                 *Duration:*           ${currentBuild.durationString}
                 *Branch:*             ${env.GIT_BRANCH ?: 'N/A'}
-            """
+            """.stripIndent()
         )
     }
 }
