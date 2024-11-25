@@ -7,6 +7,7 @@ pipeline {
         k8s_manifest_url = 'https://github.com/maramvenkatareddy/sample-project.git'
         GITHUB_TOKEN = credentials('ggit')
         ENVIRONMENT = 'qa'  // Change to the desired environment
+        def commitHash = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
     }
 
     stages {
@@ -80,7 +81,6 @@ pipeline {
             steps {
                 dir("${config.path}") {
                     script {
-                        def commitHash = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
                         if (env.ENVIRONMENT == "qa") {
                             sh "docker build -t ${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash} -f Dockerfile.qa ."
                         } else if (env.ENVIRONMENT == "prod") {
