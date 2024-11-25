@@ -1,0 +1,109 @@
+pipeline {
+    agent any
+
+    environment {
+        data_helper_repo_url = 'https://github.com/maramvenkatareddy/node_js.git'
+        platform_app_url = 'https://github.com/maramvenkatareddy/java-web-app.git'
+        GITHUB_TOKEN = credentials('ggit')
+        ENVIRONMENT = 'qa'  // Change to the desired environment
+    }
+
+    stages {
+        stage('Checkout SCM') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Read Config YAML') {
+            steps {
+                script {
+                    try {
+                        property = readYaml file: "config.yaml"
+                        if (env.ENVIRONMENT == "qa") {
+                            config = property.qa
+                            echo "Config: ${config}"
+                        } else if (env.ENVIRONMENT == "prod") {
+                            config = property.prod
+                            echo "Config: ${config}"
+                        } else {
+                            error "ENVIRONMENT variable not set or invalid!"
+                        }
+                    } catch (Exception e) {
+                        error "Failed at reading config file. Error: ${e}"
+                    }
+                }
+            }
+        }
+
+        stage('Clone Platform Application Repository') {
+            steps {
+                dir('repo2') {
+                    git branch: 'main', url: "${platform_app_url}"
+                }
+            }
+        }
+
+        stage('Clone Data Helper Repository') {
+            steps {
+                dir('repo1') {
+                    git branch: 'main', url: "${data_helper_repo_url}"
+                }
+            }
+        }
+
+        stage('Build Dependency') {
+            steps {
+                dir('repo1') {
+                    sh "npm install"
+                }
+            }
+        }
+
+        stage('Build Application') {
+            steps {
+                dir('repo2') {
+                    sh "mvn clean install"
+                }
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                dir("${config.path}") {
+                    script {
+                        def commitHash = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
+                        if (env.ENVIRONMENT == "qa") {
+                            sh "docker build -t ${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash} -f Dockerfile.qa ."
+                        } else if (env.ENVIRONMENT == "prod") {
+                            sh "docker build -t ${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash} -f Dockerfile.prod ."
+                        }
+                        sh "docker tag ${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash} ${config.ecr_url}/${config.repo_name}:latest"
+                    }
+                }
+            }
+        }
+
+        stage('Docker Image Push to ECR Repo') {
+            steps {
+                dir("${config.path}") {
+                    script {
+                        sh "aws ecr get-login-password --region ${config.region} | docker login --username AWS --password-stdin ${config.ecr_url}"
+                        def commitHash = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
+                        sh "docker push ${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash}"
+                        sh "docker push ${config.ecr_url}/${config.repo_name}:latest"
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Pipeline completed successfully!"
+        }
+        failure {
+            echo "Pipeline failed. Check logs for details."
+        }
+    }
+}
