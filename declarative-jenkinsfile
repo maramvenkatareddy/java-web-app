@@ -134,6 +134,7 @@ pipeline {
                             // Git commit and push using the credentials
                             sh 'git add .'
                             sh 'git commit -m "Updated to the newer version [ci skip]"'
+                            sh 'git pull origin main --no-rebase'
         
                             // Use the credentials for Git push
                             withCredentials([usernamePassword(credentialsId: 'ggit', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
