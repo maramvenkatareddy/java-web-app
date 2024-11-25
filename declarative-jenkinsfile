@@ -105,38 +105,45 @@ pipeline {
             }
         }
         stage('Update Image Tag in Deployment File') {
-            dir('k8s') {
-                    // Set Git configuration
-                sh 'git config user.email "venkat@gmail.com"'
-                sh 'git config user.name "venkat"'
-    
-                // Define the deployment file path
-                def deploymentFile = 'eks/prod/deployment.yaml'
-    
-                // Ensure the deployment file exists
-                if (fileExists(deploymentFile)) {
-                    echo "Updating image tag in ${deploymentFile}"
-    
-                    // Replace 'tag' placeholder with the desired image version (e.g., 1.23)
-                    sh "sed -i 's|image: 619071347058.dkr.ecr.us-west-2.amazonaws.com|image: 619071347058.dkr.ecr.us-west-2.amazonaws.com/prod-video:${config.environment}-${commitHash}|g' ${deploymentFile}"
-                    // sh "sed -i 's|image: [^ ]*|image: \"${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash}\"|g' ${deploymentFile}"
-    
-                    // Git commit and push using the credentials
-                    sh 'git add .'
-                    sh 'git commit -m "Updated to the newer version [ci skip]"'
-                    // Use the credentials for Git push
-                    withCredentials([usernamePassword(credentialsId: 'ggit', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                      echo "username is $USERNAME"
-                      echo "password is $PASSWORD"
-                      sh 'git push https://${USERNAME}:${PASSWORD}@github.com/${USERNAME}/java-web-app.git'
+            steps {
+                dir('k8s') {
+                    script {
+                        // Set Git configuration
+                        sh 'git config user.email "$GIT_EMAIL"'
+                        sh 'git config user.name "$GIT_NAME"'
+        
+                        // Ensure the deployment file exists
+                        if (fileExists(DEPLOYMENT_FILE)) {
+                            echo "Updating image tag in ${DEPLOYMENT_FILE}"
+        
+                            // Replace 'tag' placeholder with the desired image version (e.g., 1.23)
+                            sh """
+                                sed -i 's|image: 619071347058.dkr.ecr.us-west-2.amazonaws.com|image: 619071347058.dkr.ecr.us-west-2.amazonaws.com/prod-video:${config.environment}-${commitHash}|g' ${DEPLOYMENT_FILE}
+                            """
+                            // Uncomment the following if the placeholder replacement is different
+                            // sh "sed -i 's|image: [^ ]*|image: \"${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash}\"|g' ${DEPLOYMENT_FILE}"
+        
+                            // Git commit and push using the credentials
+                            sh 'git add .'
+                            sh 'git commit -m "Updated to the newer version [ci skip]"'
+        
+                            // Use the credentials for Git push
+                            withCredentials([usernamePassword(credentialsId: 'ggit', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                                echo "username is $USERNAME"
+                                echo "password is $PASSWORD"
+                                sh "git push https://${USERNAME}:${PASSWORD}@github.com/${USERNAME}/java-web-app.git"
+                            }
+        
+                            // Print the contents of the deployment file for verification
+                            sh "cat ${DEPLOYMENT_FILE}"
+                        } else {
+                            error "Deployment file ${DEPLOYMENT_FILE} not found!"
+                        }
+                    }
                 }
-                    sh "cat ${deploymentFile}"
-                } else {
-                    error "Deployment file ${deploymentFile} not found!"
-                }
-            }
         }
     }
+}
 
     post {
         success {
