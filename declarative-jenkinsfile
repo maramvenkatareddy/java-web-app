@@ -8,6 +8,7 @@ pipeline {
         GITHUB_TOKEN = credentials('ggit')
         ENVIRONMENT = 'qa'  // Change to the desired environment
         def commitHash = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
+
     }
 
     stages {
