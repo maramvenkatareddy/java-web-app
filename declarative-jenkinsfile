@@ -148,19 +148,19 @@ pipeline {
 
 post {
     always {
-        // Send Slack notification with pipeline status
         slackSend(
             channel: 'jenkins',
             message: """
-                *Pipeline Status*: ${currentBuild.currentResult}
-                *Job Name*: ${env.JOB_NAME}
-                *Build Number*: #${env.BUILD_NUMBER}
-                *Build URL*: ${env.BUILD_URL}
-                *Duration*: ${currentBuild.durationString}
-                *Branch*: ${env.BRANCH_NAME ?: 'N/A'}  // If available, will show the branch name
+                *Pipeline Status:*    ${currentBuild.currentResult}
+                *Job Name:*           ${env.JOB_NAME}
+                *Build Number:*       #${env.BUILD_NUMBER}
+                *Build URL:*          ${env.BUILD_URL}
+                *Duration:*           ${currentBuild.durationString}
+                *Branch:*             ${env.BRANCH_NAME ?: 'N/A'}
             """
         )
     }
 }
+
 
 }
