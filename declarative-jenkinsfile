@@ -156,7 +156,7 @@ post {
                 *Build Number:*       #${env.BUILD_NUMBER}
                 *Build URL:*          ${env.BUILD_URL}
                 *Duration:*           ${currentBuild.durationString}
-                *Branch:*             ${env.BRANCH_NAME ?: 'N/A'}
+                *Branch:*             ${env.GIT_BRANCH ?: 'N/A'}
             """
         )
     }
