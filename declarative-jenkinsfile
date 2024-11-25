@@ -7,6 +7,7 @@ pipeline {
         k8s_manifest_url = 'https://github.com/maramvenkatareddy/sample-project.git'
         GITHUB_TOKEN = credentials('ggit')
         ENVIRONMENT = 'qa'  // Change to the desired environment
+        branch = 'main'
         def commitHash = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
 
     }
@@ -42,14 +43,14 @@ pipeline {
         stage('Clone Platform Application Repository') {
             steps {
                 dir('repo2') {
-                    git branch: 'main', url: "${platform_app_url}"
+                    git branch: "${branch}", url: "${platform_app_url}"
                 }
             }
         }
         stage('clone the manifest files') {
             steps {
                 dir('k8s') {
-                    git branch: 'main', url: "${k8s_manifest_url}", credentialsId: 'ggit'
+                    git branch: "${branch}", url: "${k8s_manifest_url}", credentialsId: 'ggit'
                 }
             }
         }
@@ -57,7 +58,7 @@ pipeline {
         stage('Clone Data Helper Repository') {
             steps {
                 dir('repo1') {
-                    git branch: 'main', url: "${data_helper_repo_url}"
+                    git branch: "${branch}", url: "${data_helper_repo_url}"
                 }
             }
         }
