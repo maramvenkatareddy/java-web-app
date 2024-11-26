@@ -122,7 +122,7 @@ pipeline {
                              sh "sed -i 's|image: [^ ]*|image: ${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash}|' ${deploymentFile}"
         
                             // Git commit and push using the credentials
-                            sh 'git add .'
+                            sh 'git add ${deploymentFile}'
                             sh 'git commit -m "Updated to the newer version [ci skip]"'
                             // Use the credentials for Git push
                             withCredentials([usernamePassword(credentialsId: 'ggit', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
