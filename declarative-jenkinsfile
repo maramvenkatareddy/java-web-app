@@ -7,8 +7,6 @@ pipeline {
         k8s_manifest_url = 'https://github.com/maramvenkatareddy/sample-project.git'
         branch = 'main'
         commitHash = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
-        JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
-        PATH = "${JAVA_HOME}/bin:${env.PATH}"
 
     }
 
