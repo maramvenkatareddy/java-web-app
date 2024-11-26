@@ -1,0 +1,71 @@
+def applicationExists = false
+def initialCreation = false
+pipeline {
+  agent { label 'macos' }
+  environment {
+    AWS_CREDS = credentials('darinpope-aws-creds')
+    KEYCHAIN_PASSWORD = credentials('darinpope-keychain')
+  }
+  options {
+    buildDiscarder(logRotator(numToKeepStr: '5'))
+  }
+  stages {
+    stage('Unlock keychain') {
+      steps {
+        sh 'security -v unlock-keychain -p $KEYCHAIN_PASSWORD ~/Library/Keychains/login.keychain-db'
+      }
+    }    
+    stage('Tooling versions') {
+      steps {
+        sh '''
+          copilot --version
+          docker --version
+        '''
+      }
+    }
+    stage('Check if application is created') {
+      steps {
+        script {
+          def dpTest = sh(returnStdout:true, script:'copilot app ls | { grep dp-test || true; } | tr -d "\n"')
+          echo 'dpTest = ' + String.valueOf(dpTest)
+          if('dp-test'.equals(dpTest)) {
+            applicationExists = true
+          }
+          echo 'applicationExists = ' + String.valueOf(applicationExists)
+        }
+      }
+    }
+    stage('Initial deploy') {
+      when {
+        not { 
+          expression { applicationExists }
+        }
+      }
+      steps {
+        sh 'copilot init --app dp-test --name web --type "Request-Driven Web Service" --dockerfile "./Dockerfile" --deploy'
+      }
+      post {
+        always {
+          script {
+            initialCreation = true
+          }
+        }
+      }
+    }
+    stage('build and deploy') {
+      when {
+        not {
+          expression { initialCreation }
+        }
+      }
+      steps {
+        sh 'copilot svc deploy --name web'
+      }
+    }
+  }
+  post {
+    always {
+        sh 'security -v lock-keychain ~/Library/Keychains/login.keychain-db'
+    }
+  }
+}
