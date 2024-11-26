@@ -4,6 +4,7 @@ qa:
   repo_name: "video"
   region: "us-west-2"
   ecr_url: "619071347058.dkr.ecr.us-west-2.amazonaws.com"
+  deploymentfile: "eks/dev/deployment"
 prod:
   path: "./repo2"
   environment: "prod"
