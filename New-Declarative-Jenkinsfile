@@ -49,7 +49,7 @@ pipeline {
         stage('clone the manifest files') {
             steps {
                 dir('k8s') {
-                    git branch: "${branch}", url: "${k8s_manifest_url}", credentialsId: 'ggit', changelog: false, poll: false
+                    git branch: "${branch}", url: "${k8s_manifest_url}", credentialsId: 'ggit', changelog: true, poll: false
                 }
             }
         }
@@ -57,7 +57,7 @@ pipeline {
         stage('Clone Data Helper Repository') {
             steps {
                 dir('repo1') {
-                    git branch: "${branch}", url: "${data_helper_repo_url}", credentialsId: 'ggit', changelog: false, poll: false
+                    git branch: "${branch}", url: "${data_helper_repo_url}", credentialsId: 'ggit', changelog: true, poll: false
                 }
             }
         }
