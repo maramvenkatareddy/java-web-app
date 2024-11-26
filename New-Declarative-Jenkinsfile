@@ -126,6 +126,8 @@ pipeline {
                 if (fileExists(deploymentFile)) {
                     echo "Updating image tag in ${deploymentFile}"
                     echo "commithash: ${commitHash}"
+                    sh 'git status'
+                    sh 'git branch'
 
                     // Update image tag using sed
                     sh """
@@ -133,10 +135,11 @@ pipeline {
                     """
 
                     // Add changes
-                    sh 'git add .'
+                    sh 'git add ${deploymentFile}'
 
                     // Commit changes
-                    sh 'git commit -m "Updated to the newer version [ci skip]"'
+                    sh 'git commit -m "Updated to the newer version ${commitHash}"'
+                    sh 'gi status'
 
                     // Push changes using credentials
                     withCredentials([usernamePassword(credentialsId: 'ggit', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
