@@ -130,10 +130,11 @@ pipeline {
                     sh 'git branch'
 
                     // Update image tag using sed
-                    sh """
+                    sh """ 
+                        grep 'image:' eks/prod/deployment.yaml
                         sed -i 's|image: [^ ]*|image: ${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash}|' ${deploymentFile}
+                        grep 'image:' eks/prod/deployment.yaml
                     """
-
                     // Add changes
                     sh 'git add ${deploymentFile}'
 
