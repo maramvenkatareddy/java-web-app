@@ -87,6 +87,9 @@ pipeline {
                             sh "docker build -t ${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash} -f Dockerfile.prod ."
                         }
                         sh "docker tag ${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash} ${config.ecr_url}/${config.repo_name}:latest"
+                        sh "ls"
+                        sh "cat Dockerfile.qa"
+                        sh "pwd"
                     }
                 }
             }
