@@ -119,6 +119,7 @@ pipeline {
                         // Ensure the deployment file exists
                         if (fileExists(deploymentFile)) {
                             echo "Updating image tag in ${deploymentFile}"
+                            echo "commithash: ${commitHash}"
         
                             // Replace 'tag' placeholder with the desired image version (e.g., 1.23)
                 
