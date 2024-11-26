@@ -46,13 +46,6 @@ pipeline {
                 }
             }
         }
-        stage('clone the manifest files') {
-            steps {
-                dir('k8s') {
-                    git branch: "${branch}", url: "${k8s_manifest_url}", credentialsId: 'ggit', changelog: true, poll: false
-                }
-            }
-        }
 
         stage('Clone Data Helper Repository') {
             steps {
@@ -107,8 +100,12 @@ pipeline {
         }
         stage('Update Image Tag in Deployment File') {
             steps {
-                dir('k8s') {
                     script {
+                        if (fileExists('k8s')) {
+                            echo "Directory 'k8s' exists, removing it..."
+                            deleteDir()
+                        }
+                        git url: 'https://your-repository-url.git', branch: 'main'
                         // Set Git configuration
                         sh 'git config user.email "venkat@gmail.com"'
                         sh 'git config user.name "venkat"'
@@ -124,7 +121,7 @@ pipeline {
                             // Replace 'tag' placeholder with the desired image version (e.g., 1.23)
                 
                             // Uncomment the following if the placeholder replacement is different
-                             sh "sed -i 's|image: [^ ]*|image: ${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash}|' ${deploymentFile}"
+                            sh "sed -i 's|image: [^ ]*|image: ${config.ecr_url}/${config.repo_name}:${config.environment}-${commitHash}|' ${deploymentFile}"
         
                             // Git commit and push using the credentials
                             sh 'git add .'
@@ -141,7 +138,6 @@ pipeline {
                         } else {
                             error "Deployment file ${deploymentFile} not found!"
                         }
-                    }
                 }
         }
     }
