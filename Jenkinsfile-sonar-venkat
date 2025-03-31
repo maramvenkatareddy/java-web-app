@@ -30,10 +30,8 @@ pipeline {
                     withSonarQubeEnv('sonar') {
                         sh """
                             mvn clean install sonar:sonar \
-                            -Dsonar.projectKey=myjavaprojects_java_web \
-                            -Dsonar.organization=myjavaprojects \
-                            -Dsonar.projectName=java_web
-                            -Dsonar.branch.name=sonar
+                            -Dsonar.projectKey=Java_web  \
+                            -Dsonar.projectName=Java_web
                         """
                     }
                 }
