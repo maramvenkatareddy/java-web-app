@@ -51,19 +51,17 @@ pipeline {
             }
         stage('Upload to JFrog') {
             steps {
-                script {
-                    rtUpload (
-                        serverId: 'jfrog_id',
-                        spec: '''{
-                              "files": [
-                                {
-                                  "pattern": "target/*.jar",
-                                  "target": "java-web-app-libs-release/"
-                                }
-                             ]
-                        }'''
-                    )
-                }
+                rtUpload (
+                    serverId: 'jfrog_id',
+                    spec: '''{
+                          "files": [
+                            {
+                              "pattern": "target/*.jar",
+                              "target": "java-web-app-libs-release/"
+                            }
+                         ]
+                    }'''
+                )
             }
         }
     }
