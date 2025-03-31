@@ -10,7 +10,7 @@ pipeline {
     }
 
     environment {
-        SONAR_PROJECT_KEY = 'myjavaprojects_java-web'
+        SONAR_PROJECT_KEY = 'myjavaprojects_java_web'
     }
 
     stages {
@@ -31,7 +31,7 @@ pipeline {
                         sh """
                             mvn clean install sonar:sonar \
                             -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                            -Dsonar.organization=myjavaprojects
+                            -Dsonar.organization=MyJavaProjects
                         """
                     }
                 }
