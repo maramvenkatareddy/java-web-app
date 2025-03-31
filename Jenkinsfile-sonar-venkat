@@ -5,20 +5,34 @@ pipeline {
         pollSCM('H/5 * * * *') // Polls every 5 minutes instead of every minute
     }
 
+    tools {
+        maven 'maven'  // Ensure Maven is configured in Jenkins Global Tool Configuration
+    }
+
+    environment {
+        SONAR_PROJECT_KEY = 'myjavaprojects_java-web'
+    }
+
     stages {
         stage('Clone the code from GitHub') {
             steps {
-                git branch: 'sonar', url: 'https://github.com/maramvenkatareddy/java-web-app.git'
+                script {
+                    // Ensure the GitHub repository and branch exist
+                    git branch: 'sonar', url: 'https://github.com/maramvenkatareddy/java-web-app.git'
+                }
             }
         }
 
         stage('Build the code and SonarQube analysis') {
             steps {
-                withSonarQubeEnv('sonar') {
-                    sh """
-                        mvn clean install sonar:sonar \
-                        -Dsonar.projectKey=myjavaprojects_java-web
-                    """
+                script {
+                    // Ensure SonarQube environment is set correctly
+                    withSonarQubeEnv('sonar') {
+                        sh """
+                            mvn clean install sonar:sonar \
+                            -Dsonar.projectKey=${SONAR_PROJECT_KEY}
+                        """
+                    }
                 }
             }
         }
