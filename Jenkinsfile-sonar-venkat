@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+
+    triggers {
+        pollSCM('H/5 * * * *') // Polls every 5 minutes instead of every minute
+    }
+
+    stages {
+        stage('Clone the code from GitHub') {
+            steps {
+                git branch: 'sonar', url: 'https://github.com/maramvenkatareddy/java-web-app.git'
+            }
+        }
+
+        stage('Build the code and SonarQube analysis') {
+            steps {
+                withSonarQubeEnv('sonar') {
+                    sh """
+                        mvn clean install sonar:sonar \
+                        -Dsonar.projectKey=myjavaprojects_java-web
+                    """
+                }
+            }
+        }
+    }
+}
