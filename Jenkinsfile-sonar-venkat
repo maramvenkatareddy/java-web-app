@@ -59,7 +59,7 @@ pipeline {
                       "target": "java-web-app-libs-release/"
                     }
                  ]
-            }''',
+            }'''
             )
         }
     }
