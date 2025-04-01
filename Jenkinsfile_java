@@ -1,0 +1,17 @@
+pipeline {
+  agent any
+  stages {
+    # github
+    stage('clone the application code') {
+      steps {
+        git branch: 'sonar', url: 'https://github.com/maramvenkatareddy/java-web-app.git'
+      }
+    }
+    # maven build
+    stage('build the application code usingmaven tool') {
+      steps {
+        sh 'mvn package'
+      }
+    }
+  }
+}
