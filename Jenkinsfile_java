@@ -4,8 +4,7 @@ pipeline {
     choice(name: 'maven_versions', choices: ['maven_3.6', 'maven3.9'], description: 'pick up maven version')
   }
   tools {
-        maven 'maven_3.6'
-        maven 'maven3.9'
+        maven "${params.maven_versions}"
     }
   stages {
     stage('clone the application code') {
@@ -15,7 +14,7 @@ pipeline {
     }
     stage('build the application code usingmaven tool') {
       steps {
-        sh "${params.maven_versions} package"
+        sh "mvn package"
       }
     }
   }
