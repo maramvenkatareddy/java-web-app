@@ -1,5 +1,8 @@
 pipeline {
   agent any
+  tools {
+        maven 'maven_3.6'
+    }
   stages {
     stage('clone the application code') {
       steps {
