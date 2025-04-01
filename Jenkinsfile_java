@@ -1,8 +1,11 @@
 pipeline {
   agent any
-  triggers { upstream(upstreamProjects: 'ggg', threshold: hudson.model.Result.SUCCESS) }
+  parameters {
+    choice(name: 'CHOICE', choices: ['maven_3.6', 'maven3.9'], description: 'pick up maven version')
+  }
   tools {
         maven 'maven_3.6'
+        maven 'maven3.9'
     }
   stages {
     stage('clone the application code') {
@@ -13,14 +16,6 @@ pipeline {
     stage('build the application code usingmaven tool') {
       steps {
         sh 'mvn package'
-      }
-    }
-    stage('maven version') {
-      tools {
-        maven 'maven3.9'
-      }
-      steps {
-        sh 'mvn --version'
       }
     }
   }
