@@ -14,5 +14,13 @@ pipeline {
         sh 'mvn package'
       }
     }
+    stage('build the application code usingmaven tool') {
+      tools {
+        maven 'maven3.9'
+      }
+      steps {
+        sh 'mvn --version'
+      }
+    }
   }
 }
