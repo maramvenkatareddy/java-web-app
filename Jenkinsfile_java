@@ -2,6 +2,7 @@ pipeline {
   agent any
   parameters {
     choice(name: 'maven_versions', choices: ['maven_3.6', 'maven3.9'], description: 'pick up maven version')
+    booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
   }
   tools {
         maven "${params.maven_versions}"
