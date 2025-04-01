@@ -1,7 +1,7 @@
 pipeline {
   agent any
   parameters {
-    choice(name: 'CHOICE', choices: ['maven_3.6', 'maven3.9'], description: 'pick up maven version')
+    choice(name: 'maven_versions', choices: ['maven_3.6', 'maven3.9'], description: 'pick up maven version')
   }
   tools {
         maven 'maven_3.6'
@@ -15,7 +15,7 @@ pipeline {
     }
     stage('build the application code usingmaven tool') {
       steps {
-        sh 'mvn package'
+        sh '${params.maven_versions} package'
       }
     }
   }
