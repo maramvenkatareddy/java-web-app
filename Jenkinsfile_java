@@ -15,7 +15,7 @@ pipeline {
     }
     stage('build the application code usingmaven tool') {
       steps {
-        sh '${params.maven_versions} package'
+        sh "${params.maven_versions} package"
       }
     }
   }
