@@ -1,0 +1,20 @@
+pipeline {
+
+agent any
+
+stages{
+  stage('clone the code') {
+    steps{
+      git branch: 'training_branch', url: 'https://github.com/darinpope/java-web-app.git'
+    }
+  }
+  stage('build the code') {
+    steps {
+        withSonarQubeEnv('sonarqube_java') {
+        sh "mvn clean package sonar:sonar -Dsonar.projectKey='Java_Web_App_1' -Dsonar.projectName='Java_Web_App_1'"
+        }
+    }
+  }
+}
+
+}
