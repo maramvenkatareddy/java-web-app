@@ -84,7 +84,7 @@ pipeline {
                       sh 'echo $PASSWORD'
                       echo USERNAME
                       echo "username is $USERNAME"
-                      jf -v
+                      sh 'jf -v'
                       
                 }
             }
