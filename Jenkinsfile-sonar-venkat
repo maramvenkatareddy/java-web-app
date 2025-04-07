@@ -85,10 +85,7 @@ pipeline {
                       echo USERNAME
                       echo "username is $USERNAME"
                       jf '-v'
-                      sh 'whereis jfrog-cli'
-                      sh 'jfrog_cli -v'
-                      sh 'jf -v'
-                      
+                      jf 'rt u target/*.jar my-repo/java-web-app-libs-snapshot'
                 }
             }
         }
