@@ -77,7 +77,7 @@ pipeline {
 
         stage('deploy to artifacts'){
             environment {
-                jfrog_url = 'https://trial7lu07a.jfrog.io/artifactory'
+                jfrog_url = 'https://trial7lu07a.jfrog.io'
             }
             steps {
                 withCredentials([string(credentialsId: 'Jfrog_token_new', variable: 'ARTIFACTORY_TOKEN')]) {
