@@ -84,8 +84,10 @@ pipeline {
             }
             steps {
                 withCredentials([string(credentialsId: 'Jfrog_token_new', variable: 'ARTIFACTORY_TOKEN')]) {
-                     // jf "rt config --url ${jfrog_url} --access-token ${ARTIFACTORY_TOKEN} --interactive=false"
-                      jf 'rt u target/*.jar java-web-app-libs-snapshot/'
+                    sh """"
+                         jf 'rt config --url ${jfrog_url} --access-token ${ARTIFACTORY_TOKEN} --interactive=false'
+                         jf 'rt u target/*.jar java-web-app-libs-snapshot/'
+                    """
                 }
             }
         }
