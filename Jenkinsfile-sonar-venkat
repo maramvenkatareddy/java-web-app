@@ -98,7 +98,8 @@ pipeline {
                               "target": "java-web-app-libs-snapshot/"
                             }
                          ]
-                    }'''
+                    }''',
+                    project: 'bankok application'
                 )
             }
         }
