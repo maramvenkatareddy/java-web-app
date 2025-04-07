@@ -49,31 +49,45 @@ pipeline {
                     }
                 }
             }
-        stage('Deploy to Artifactory') {
-           environment {
-                TARGET_REPO = 'java-web-app-libs-release'
+       // stage('Deploy to Artifactory') {
+       //    environment {
+       //         TARGET_REPO = 'java-web-app-libs-release'
+       //     }
+       //     
+       //     steps {
+       //         script {
+       //             try {
+       //                 def server = Artifactory.newServer url: 'https://trial7lu07a.jfrog.io/artifactory', credentialsId: 'jfrog_user_pass'
+       //                 def uploadSpec = """{
+       //                     "files": [
+       //                         {
+       //                             "pattern": "target/*.jar",
+       //                             "target": "${TARGET_REPO}/"
+       //                         }
+       //                     ]
+       //                 }"""
+       //                 
+       //                 server.upload(uploadSpec)
+       //             } catch (Exception e) {
+       //                 error("Failed to deploy artifacts to Artifactory: ${e.message}")
+       //             }
+       //         }
+       //      }
+       //  }
+
+        stage('deploy to artifacts'){
+            tools {
+                jfrog 'jfrog_cli'
             }
-            
             steps {
-                script {
-                    try {
-                        def server = Artifactory.newServer url: 'https://trial7lu07a.jfrog.io/artifactory', credentialsId: 'jfrog_user_pass'
-                        def uploadSpec = """{
-                            "files": [
-                                {
-                                    "pattern": "target/*.jar",
-                                    "target": "${TARGET_REPO}/"
-                                }
-                            ]
-                        }"""
-                        
-                        server.upload(uploadSpec)
-                    } catch (Exception e) {
-                        error("Failed to deploy artifacts to Artifactory: ${e.message}")
-                    }
+                withCredentials([usernamePassword(credentialsId: 'jfrog_user_pass', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                      sh 'echo $PASSWORD'
+                      echo USERNAME
+                      echo "username is $USERNAME"
+                      jf -v
+                      
                 }
-             }
-         }
-        
+            }
+        }
     }
 }
