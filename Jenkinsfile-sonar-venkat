@@ -74,18 +74,32 @@ pipeline {
        //         }
        //      }
        //  }
-
-        stage('deploy to artifacts'){
-            environment {
-                jfrog_url = 'https://trial7lu07a.jfrog.io'
-            }
+       // stage('deploy to artifacts'){
+       //     environment {
+       //         jfrog_url = 'https://trial7lu07a.jfrog.io'
+       //     }
+       //     steps {
+       //         withCredentials([string(credentialsId: 'Jfrog_token_new', variable: 'ARTIFACTORY_TOKEN')]) {
+       //             sh """
+       //                  jf c add --url ${jfrog_url} --access-token ${ARTIFACTORY_TOKEN} --interactive=false
+       //                  jf rt u target/*.jar java-web-app-libs-snapshot/
+       //             """
+       //         }
+       //     }
+       // }
+        stage('deploy through artifactory') {
             steps {
-                withCredentials([string(credentialsId: 'Jfrog_token_new', variable: 'ARTIFACTORY_TOKEN')]) {
-                    sh """
-                         jf c add --url ${jfrog_url} --access-token ${ARTIFACTORY_TOKEN} --interactive=false
-                         jf rt u target/*.jar java-web-app-libs-snapshot/
-                    """
-                }
+                rtUpload (
+                    serverId: 'jfrog_artifactory',
+                    spec: '''{
+                          "files": [
+                            {
+                              "pattern": "target/*.jar",
+                              "target": "java-web-app-libs-snapshot/"
+                            }
+                         ]
+                    }'''
+                )
             }
         }
     }
