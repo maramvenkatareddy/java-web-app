@@ -79,9 +79,6 @@ pipeline {
             environment {
                 jfrog_url = 'https://trial7lu07a.jfrog.io/artifactory'
             }
-            tools {
-                jfrog 'jfrog_cli'
-            }
             steps {
                 withCredentials([string(credentialsId: 'Jfrog_token_new', variable: 'ARTIFACTORY_TOKEN')]) {
                     sh """"
