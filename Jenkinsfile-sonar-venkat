@@ -76,12 +76,15 @@ pipeline {
        //  }
 
         stage('deploy to artifacts'){
+            environment {
+                jfrog_url = 'https://trial7lu07a.jfrog.io/artifactory'
+            }
             tools {
                 jfrog 'jfrog_cli'
             }
             steps {
                 withCredentials([string(credentialsId: 'Jfrog_token_new', variable: 'ARTIFACTORY_TOKEN')]) {
-                      jf 'rt config --url 'https://trial7lu07a.jfrog.io/artifactory' --access-token ${ARTIFACTORY_TOKEN} --interactive=false'
+                      jf "rt config --url ${jfrog_url} --access-token ${ARTIFACTORY_TOKEN} --interactive=false"
                       jf 'rt u target/*.jar my-repo/java-web-app-libs-snapshot'
                 }
             }
