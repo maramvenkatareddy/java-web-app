@@ -9,6 +9,9 @@ stages{
     }
   }
   stage('build the code') {
+    tools {
+      maven 'maven_3.6'
+    }
     steps {
         withSonarQubeEnv('sonarqube_java') {
         sh "mvn clean package sonar:sonar -Dsonar.projectKey='Java_Web_App_1' -Dsonar.projectName='Java_Web_App_1'"
