@@ -80,11 +80,7 @@ pipeline {
                 jfrog 'jfrog_cli'
             }
             steps {
-                withCredentials([usernamePassword(credentialsId: 'jfrog_user_pass', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                      sh 'echo $PASSWORD'
-                      echo USERNAME
-                      echo "username is $USERNAME"
-                      jf '-v'
+                withCredentials([usernamePassword(credentialsId: 'Jfrog_token_new', variable: 'ARTIFACTORY_TOKEN')]) {
                       jf 'rt u target/*.jar my-repo/java-web-app-libs-snapshot'
                 }
             }
