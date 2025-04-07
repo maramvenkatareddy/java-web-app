@@ -84,6 +84,8 @@ pipeline {
                       sh 'echo $PASSWORD'
                       echo USERNAME
                       echo "username is $USERNAME"
+                      sh 'whereis jfrog-cli'
+                      sh 'jfrog_cli -v'
                       sh 'jf -v'
                       
                 }
