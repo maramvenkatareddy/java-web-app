@@ -25,5 +25,21 @@ stages{
         }
     }
   }
+  stage('jfrog') {
+    steps {
+      rtUpload (
+            serverId: 'training_jfrog_id',
+            spec: '''{
+                  "files": [
+                    {
+                      "pattern": "target/*.jar",
+                      "target": "training_java_repo-libs-release/"
+                    }
+                 ]
+            }''',
+            project: 'trjava'
+      )
+    }
+  }
 }
 }
