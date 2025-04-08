@@ -1,3 +1,3 @@
-# java-web based application
+# java-web based applications
 
 modify README
