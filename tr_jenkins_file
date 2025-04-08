@@ -30,6 +30,7 @@ stages{
         withCredentials([string(credentialsId: 'training_jfrog_id', variable: 'Token_jfrog')]) {
           sh "jf c add --access-token ${Token_jfrog} --url https://trial7lu07a.jfrog.io --artifactory-url https://trial7lu07a.jfrog.io/artifactory"
           sh 'jf rt u target/*.jar training_java_repo-libs-release/'
+        }
     }
   }
 }
